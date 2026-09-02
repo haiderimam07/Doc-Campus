@@ -1,0 +1,6 @@
+# Treat build directories as generated code so they are excluded from stats
+dist/** linguist-generated=true
+build/** linguist-generated=true
+
+# Alternatively, force GitHub to recognize .js files inside dist as vendored
+dist/*.js linguist-vendored=true
