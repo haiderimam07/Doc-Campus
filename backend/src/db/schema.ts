@@ -137,6 +137,7 @@ export const likes = pgTable(
     userId: uuid('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.postId, table.userId] }),
@@ -154,6 +155,7 @@ export const saves = pgTable(
     userId: uuid('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.postId, table.userId] }),
@@ -161,7 +163,7 @@ export const saves = pgTable(
   })
 );
 
-// --- DRIZZLE RELATIONS (Relational Query API Support) ---
+// --- DRIZZLE RELATIONS ---
 
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),
@@ -183,6 +185,10 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   postTags: many(postTags),
 }));
 
+export const tagsRelations = relations(tags, ({ many }) => ({
+  postTags: many(postTags),
+}));
+
 export const postTagsRelations = relations(postTags, ({ one }) => ({
   post: one(posts, {
     fields: [postTags.postId],
@@ -191,5 +197,51 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
   tag: one(tags, {
     fields: [postTags.tagId],
     references: [tags.id],
+  }),
+}));
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+  post: one(posts, {
+    fields: [comments.postId],
+    references: [posts.id],
+  }),
+  author: one(users, {
+    fields: [comments.userId],
+    references: [users.id],
+  }),
+}));
+
+export const likesRelations = relations(likes, ({ one }) => ({
+  post: one(posts, {
+    fields: [likes.postId],
+    references: [posts.id],
+  }),
+  user: one(users, {
+    fields: [likes.userId],
+    references: [users.id],
+  }),
+}));
+
+export const savesRelations = relations(saves, ({ one }) => ({
+  post: one(posts, {
+    fields: [saves.postId],
+    references: [posts.id],
+  }),
+  user: one(users, {
+    fields: [saves.userId],
+    references: [users.id],
+  }),
+}));
+
+export const followsRelations = relations(follows, ({ one }) => ({
+  follower: one(users, {
+    fields: [follows.followerId],
+    references: [users.id],
+    relationName: 'follower',
+  }),
+  following: one(users, {
+    fields: [follows.followingId],
+    references: [users.id],
+    relationName: 'following',
   }),
 }));
