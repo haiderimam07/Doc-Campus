@@ -1,6 +1,7 @@
-# Treat build directories as generated code so they are excluded from stats
-dist/** linguist-generated=true
-build/** linguist-generated=true
+# Treat all JavaScript files anywhere in the project as vendored/generated
+*.js linguist-vendored=true
+*.jsx linguist-vendored=true
 
-# Alternatively, force GitHub to recognize .js files inside dist as vendored
-dist/*.js linguist-vendored=true
+# Ensure TypeScript files are explicitly counted as the main project code
+*.ts linguist-detectable=true
+*.tsx linguist-detectable=true
