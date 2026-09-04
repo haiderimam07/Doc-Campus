@@ -5,4 +5,9 @@ export const updateProfileSchema = z.object({
   avatarUrl: z.string().url().optional(),
 });
 
+export const paginationQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+});
+
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

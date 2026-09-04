@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { postParamsSchema } from './posts.schema.js';
-import { uploadToStorage } from '../../lib/upload.js';// Your storage utility (Cloudinary/S3)
+import { createPostSchema, postParamsSchema, feedQuerySchema } from './posts.schema.js';
+import { uploadToStorage, deleteFromStorage } from '../../lib/upload.js'; // Your storage utility (Cloudinary/S3)
 import {
   createPost,
   getPostById,
@@ -11,16 +11,11 @@ import {
 
 export default async function postsRoutes(fastify: FastifyInstance) {
 
-  // GET /posts/feed — Unified Hybrid Feed (Optional auth for guest fallback)
-  fastify.get('/feed', async (request, reply) => {
-    const { cursor, limit } = request.query as { cursor?: string; limit?: string };
+  // GET /posts/feed — Unified Hybrid Feed (optional auth, guest fallback)
+  fastify.get('/feed', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {
+    const { cursor, limit } = feedQuerySchema.parse(request.query);
     const currentUserId = request.user?.sub ?? null;
-
-    const feed = await getHybridFeed(fastify, currentUserId, {
-      cursor,
-      limit: limit ? parseInt(limit, 10) : 10,
-    });
-
+    const feed = await getHybridFeed(fastify, currentUserId, { cursor, limit });
     return feed;
   });
 
@@ -32,32 +27,32 @@ export default async function postsRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: 'A file attachment is required' });
     }
 
-    // Extract description text field from multipart fields
     const descriptionField = data.fields.description;
-    const description = typeof descriptionField === 'object' && 'value' in descriptionField 
-      ? (descriptionField.value as string) 
-      : '';
-
-    // 1. Upload file stream to Cloudinary/S3 storage
-    const { fileUrl, fileType } = await uploadToStorage(data);
-
-    // 2. Save post record to PostgreSQL
-    const post = await createPost(fastify, request.user.sub, {
-      description,
-      fileUrl,
-      fileType,
+    const { description } = createPostSchema.pick({ description: true }).parse({
+      description: descriptionField && 'value' in descriptionField ? descriptionField.value : undefined,
     });
 
-    // 3. Enqueue BullMQ OCR processing job (Phase 6 placeholder)
-    // await fastify.ocrQueue.add('process-ocr', { postId: post.id, fileUrl: post.fileUrl });
+    const { fileUrl, fileType } = await uploadToStorage(data);
 
-    return reply.status(201).send(post);
+    try {
+      const post = await createPost(fastify, request.user.sub, { description, fileUrl, fileType });
+
+      // 3. Enqueue BullMQ OCR processing job
+      // await fastify.ocrQueue.add('process-ocr', { postId: post.id, fileUrl: post.fileUrl });
+
+      return reply.status(201).send(post);
+    } catch (err) {
+      await deleteFromStorage(fileUrl).catch(() => {});
+      throw err;
+    }
   });
 
-  // GET /posts/user/:username — User Profile Posts
+  // GET /posts/user/:username — User Profile Posts (cursor-paginated, same shape as /feed)
   fastify.get('/user/:username', async (request, reply) => {
     const { username } = request.params as { username: string };
-    const userPosts = await getPostsByUsername(fastify, username);
+    const { cursor, limit } = feedQuerySchema.parse(request.query);
+
+    const userPosts = await getPostsByUsername(fastify, username, { cursor, limit});
 
     return userPosts;
   });

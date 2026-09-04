@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { updateProfileSchema } from './users.schema.js';
+import { paginationQuerySchema, updateProfileSchema } from './users.schema.js';
 import {
   getUserSummary,
   getProfileByUsername,
@@ -31,7 +31,7 @@ export default async function usersRoutes(fastify: FastifyInstance) {
   // 2. DYNAMIC PARAMETER ROUTES (/:username)
 
   // Unified full profile endpoint (handles both self and other users)
-  fastify.get('/:username', async (request, reply) => {
+  fastify.get('/:username', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {
     const { username } = request.params as { username: string };
     
     // Pass current user ID if token exists (optional auth), otherwise null
@@ -48,7 +48,8 @@ export default async function usersRoutes(fastify: FastifyInstance) {
   // Followers list
   fastify.get('/:username/followers', async (request, reply) => {
     const { username } = request.params as { username: string };
-    const followers = await getFollowers(fastify, username);
+    const query = paginationQuerySchema.parse(request.query);
+    const followers = await getFollowers(fastify, username, query);
 
     if (!followers) {
       return reply.status(404).send({ error: 'User not found' });
@@ -60,7 +61,8 @@ export default async function usersRoutes(fastify: FastifyInstance) {
   // Following list
   fastify.get('/:username/following', async (request, reply) => {
     const { username } = request.params as { username: string };
-    const following = await getFollowing(fastify, username);
+    const query = paginationQuerySchema.parse(request.query);
+    const following = await getFollowing(fastify, username, query);
 
     if (!following) {
       return reply.status(404).send({ error: 'User not found' });

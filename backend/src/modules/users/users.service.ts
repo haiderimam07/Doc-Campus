@@ -1,7 +1,13 @@
 import { FastifyInstance } from 'fastify';
-import { eq, and, count } from 'drizzle-orm';
+import { eq, and, count, desc, lt } from 'drizzle-orm';
+import { decodeCursor, encodeCursor } from '../../lib/pagination.js';
 import { users, follows } from '../../db/schema.js';
 import { UpdateProfileInput } from './users.schema.js';
+
+interface PaginationParams {
+  cursor?: string;
+  limit: number;
+}
 
 const publicUserFields = {
   id: users.id,
@@ -109,32 +115,66 @@ async function getUserIdByUsername(fastify: FastifyInstance, username: string) {
 }
 
 // 4. Followers & Following lists
-export async function getFollowers(fastify: FastifyInstance, username: string) {
+export async function getFollowers(
+  fastify: FastifyInstance,
+  username: string,
+  { cursor, limit }: PaginationParams
+) {
   const userId = await getUserIdByUsername(fastify, username);
 
   if (!userId) {
     return null;
   }
 
-  return fastify.db
+  const cursorCondition = cursor ? lt(follows.followerId, decodeCursor(cursor).id) : undefined;
+  const followers = await fastify.db
     .select(publicUserFields)
     .from(follows)
     .innerJoin(users, eq(users.id, follows.followerId))
-    .where(eq(follows.followingId, userId));
+    .where(cursorCondition ? and(eq(follows.followingId, userId), cursorCondition) : eq(follows.followingId, userId))
+    .orderBy(desc(follows.followerId))
+    .limit(limit + 1);
+
+  const hasNextPage = followers.length > limit;
+  const items = hasNextPage ? followers.slice(0, limit) : followers;
+  const lastItem = items[items.length - 1];
+
+  return {
+    items,
+    nextCursor: hasNextPage && lastItem ? encodeCursor(new Date(0), lastItem.id) : null,
+    hasNextPage,
+  };
 }
 
-export async function getFollowing(fastify: FastifyInstance, username: string) {
+export async function getFollowing(
+  fastify: FastifyInstance,
+  username: string,
+  { cursor, limit }: PaginationParams
+) {
   const userId = await getUserIdByUsername(fastify, username);
 
   if (!userId) {
     return null;
   }
 
-  return fastify.db
+  const cursorCondition = cursor ? lt(follows.followingId, decodeCursor(cursor).id) : undefined;
+  const following = await fastify.db
     .select(publicUserFields)
     .from(follows)
     .innerJoin(users, eq(users.id, follows.followingId))
-    .where(eq(follows.followerId, userId));
+    .where(cursorCondition ? and(eq(follows.followerId, userId), cursorCondition) : eq(follows.followerId, userId))
+    .orderBy(desc(follows.followingId))
+    .limit(limit + 1);
+
+  const hasNextPage = following.length > limit;
+  const items = hasNextPage ? following.slice(0, limit) : following;
+  const lastItem = items[items.length - 1];
+
+  return {
+    items,
+    nextCursor: hasNextPage && lastItem ? encodeCursor(new Date(0), lastItem.id) : null,
+    hasNextPage,
+  };
 }
 
 // 5. Mutations: Profile updates & Social graph

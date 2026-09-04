@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { eq, and, desc, lt, inArray, notInArray } from 'drizzle-orm';
+import { eq, and, desc, or, lt, inArray, notInArray } from 'drizzle-orm';
+import { decodeCursor, encodeCursor } from '../../lib/pagination.js';
 import { posts, users, follows } from '../../db/schema.js';
 import { CreatePostInput } from './posts.schema.js';
 
@@ -53,20 +54,56 @@ export async function getPostById(fastify: FastifyInstance, postId: string) {
 }
 
 // 3. Fetch posts by a specific username
-export async function getPostsByUsername(fastify: FastifyInstance, username: string) {
-  return fastify.db
+export async function getPostsByUsername(
+  fastify: FastifyInstance,
+  username: string,
+  { cursor, limit }: { cursor?: string; limit: number }
+) {
+  const user = await fastify.db.query.users.findFirst({
+    where: eq(users.username, username),
+  });
+  if (!user) return { items: [], nextCursor: null, hasNextPage: false };
+
+  const cursorCond = cursor
+    ? (() => {
+        const { createdAt, id } = decodeCursor(cursor);
+        return or(
+          lt(posts.createdAt, createdAt),
+          and(eq(posts.createdAt, createdAt), lt(posts.id, id))
+        );
+      })()
+    : undefined;
+
+  const userPosts = await fastify.db
     .select({
       id: posts.id,
       description: posts.description,
       fileUrl: posts.fileUrl,
       fileType: posts.fileType,
       ocrStatus: posts.ocrStatus,
+      ocrText: posts.ocrText,
       createdAt: posts.createdAt,
+      author: {
+        id: users.id,
+        username: users.username,
+        avatarUrl: users.avatarUrl,
+      },
     })
     .from(posts)
     .innerJoin(users, eq(users.id, posts.userId))
-    .where(eq(users.username, username))
-    .orderBy(desc(posts.createdAt));
+    .where(cursorCond ? and(eq(posts.userId, user.id), cursorCond) : eq(posts.userId, user.id))
+    .orderBy(desc(posts.createdAt), desc(posts.id))
+    .limit(limit + 1);
+
+  const hasNextPage = userPosts.length > limit;
+  const items = hasNextPage ? userPosts.slice(0, limit) : userPosts;
+  const lastItem = items[items.length - 1];
+
+  return {
+    items,
+    nextCursor: hasNextPage && lastItem ? encodeCursor(lastItem.createdAt, lastItem.id) : null,
+    hasNextPage,
+  };
 }
 
 // 4. Delete a post (ensures ownership)
@@ -89,7 +126,15 @@ export async function getHybridFeed(
   currentUserId: string | null,
   { cursor, limit = 10 }: FeedQueryParams
 ) {
-  const cursorCondition = cursor ? lt(posts.createdAt, new Date(cursor)) : undefined;
+  const cursorCondition = cursor
+    ? (() => {
+        const { createdAt, id } = decodeCursor(cursor);
+        return or(
+          lt(posts.createdAt, createdAt),
+          and(eq(posts.createdAt, createdAt), lt(posts.id, id))
+        );
+      })()
+    : undefined;
 
   let followedIds: string[] = [];
 
@@ -137,7 +182,7 @@ export async function getHybridFeed(
       .from(posts)
       .innerJoin(users, eq(users.id, posts.userId))
       .where(and(inArray(posts.userId, followedIds), cursorCondition))
-      .orderBy(desc(posts.createdAt))
+      .orderBy(desc(posts.createdAt), desc(posts.id))
       .limit(limit + 1);
   }
 
@@ -168,10 +213,14 @@ export async function getHybridFeed(
       .from(posts)
       .innerJoin(users, eq(users.id, posts.userId))
       .where(and(...globalConditions.filter((c): c is NonNullable<typeof c> => c !== undefined)))
-      .orderBy(desc(posts.createdAt))
+      .orderBy(desc(posts.createdAt), desc(posts.id))
       .limit(neededCount);
 
-    feedPosts = [...feedPosts, ...globalPosts];
+    feedPosts = [...feedPosts, ...globalPosts].sort((first, second) => {
+      const createdAtDifference = second.createdAt.getTime() - first.createdAt.getTime();
+      if (createdAtDifference !== 0) return createdAtDifference;
+      return second.id > first.id ? 1 : second.id < first.id ? -1 : 0;
+    });
   }
 
   // Step 3: Compute cursor pagination metadata
@@ -179,7 +228,7 @@ export async function getHybridFeed(
   const items = hasNextPage ? feedPosts.slice(0, limit) : feedPosts;
   const nextCursor =
     hasNextPage && items.length > 0
-      ? items[items.length - 1].createdAt.toISOString()
+      ? encodeCursor(items[items.length - 1].createdAt, items[items.length - 1].id)
       : null;
 
   return { items, nextCursor, hasNextPage };

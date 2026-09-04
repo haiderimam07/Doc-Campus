@@ -100,6 +100,11 @@ export const follows = pgTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.followerId, table.followingId] }),
+    followerIdIdx: index('follows_follower_id_idx').on(table.followerId),
+    followingFollowerIdx: index('follows_following_follower_idx').on(
+      table.followingId,
+      table.followerId
+    ),
     followingIdx: index('follows_following_id_idx').on(table.followingId),
     preventSelfFollow: check(
       'prevent_self_follow',

@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { MultipartFile } from '@fastify/multipart';
 import { extname } from 'node:path';
@@ -13,6 +13,9 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
   },
 });
+
+const bucketName = process.env.R2_BUCKET_NAME!;
+const publicDomain = process.env.R2_PUBLIC_DOMAIN!;
 
 // Helper: Map MIME type / extension to your Drizzle fileType enum
 function detectFileType(mimetype: string, filename: string): 'image' | 'pdf' | 'doc' | 'other' {
@@ -37,7 +40,6 @@ function detectFileType(mimetype: string, filename: string): 'image' | 'pdf' | '
 export async function uploadToStorage(file: MultipartFile) {
   const fileExt = extname(file.filename);
   const fileKey = `posts/${randomUUID()}${fileExt}`;
-  const bucketName = process.env.R2_BUCKET_NAME!;
 
   // Stream directly into R2 bucket
   const parallelUpload = new Upload({
@@ -52,12 +54,31 @@ export async function uploadToStorage(file: MultipartFile) {
 
   await parallelUpload.done();
 
-  // Public access URL
-  const publicUrl = `${process.env.R2_PUBLIC_DOMAIN}/${fileKey}`;
+  const publicUrl = `${publicDomain}/${fileKey}`;
   const fileType = detectFileType(file.mimetype, file.filename);
 
   return {
     fileUrl: publicUrl,
     fileType,
   };
+}
+
+// 3. Delete Handler — cleans up an orphaned upload (e.g. DB insert failed after upload succeeded)
+export async function deleteFromStorage(fileUrl: string): Promise<void> {
+  // fileUrl was built as `${publicDomain}/${fileKey}` in uploadToStorage,
+  // so strip that same prefix back off to recover the key — avoids relying
+  // on URL parsing, which can misbehave if publicDomain itself has a path.
+  const prefix = `${publicDomain}/`;
+  if (!fileUrl.startsWith(prefix)) {
+    // Not a URL we generated — nothing safe to delete
+    return;
+  }
+  const key = fileUrl.slice(prefix.length);
+
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+    })
+  );
 }
