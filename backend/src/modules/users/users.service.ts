@@ -3,6 +3,7 @@ import { eq, and, count, desc, lt } from 'drizzle-orm';
 import { decodeCursor, encodeCursor } from '../../lib/pagination.js';
 import { users, follows } from '../../db/schema.js';
 import { UpdateProfileInput } from './users.schema.js';
+import {  deleteFromStorage } from '../../lib/upload.js';
 
 interface PaginationParams {
   cursor?: string;
@@ -181,11 +182,45 @@ export async function getFollowing(
 export async function updateProfile(
   fastify: FastifyInstance,
   userId: string,
-  input: UpdateProfileInput
+  input: UpdateProfileInput & { avatarUrl?: string | null }
 ) {
+  // 1. Storage cleanup if avatarUrl is explicitly changed or set to null
+  if (input.avatarUrl !== undefined) {
+    const [currentUser] = await fastify.db
+      .select({ avatarUrl: users.avatarUrl })
+      .from(users)
+      .where(eq(users.id, userId));
+
+    if (currentUser?.avatarUrl && currentUser.avatarUrl !== input.avatarUrl) {
+      await deleteFromStorage(currentUser.avatarUrl).catch(() => {});
+    }
+  }
+
+  // 2. Build explicit update payload
+  const updateData: Record<string, any> = {};
+
+  if (input.bio !== undefined) updateData.bio = input.bio;
+  if (input.avatarUrl !== undefined) updateData.avatarUrl = input.avatarUrl;
+
+  // Prevent Drizzle from failing on empty objects
+  if (Object.keys(updateData).length === 0) {
+    const [existing] = await fastify.db
+      .select({
+        id: users.id,
+        username: users.username,
+        bio: users.bio,
+        avatarUrl: users.avatarUrl,
+      })
+      .from(users)
+      .where(eq(users.id, userId));
+
+    return existing;
+  }
+
+  // 3. Execute update
   const [updated] = await fastify.db
     .update(users)
-    .set(input)
+    .set(updateData)
     .where(eq(users.id, userId))
     .returning({
       id: users.id,

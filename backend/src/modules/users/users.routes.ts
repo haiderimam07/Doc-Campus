@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { paginationQuerySchema, updateProfileSchema } from './users.schema.js';
+import { uploadToStorage } from '../../lib/upload.js';
 import {
   getUserSummary,
   getProfileByUsername,
@@ -19,13 +20,63 @@ export default async function usersRoutes(fastify: FastifyInstance) {
     const summary = await getUserSummary(fastify, request.user.sub);
     return summary;
   });
-
-  // Update authenticated user profile
+  
+  //update profile
   fastify.patch('/me', { preHandler: [fastify.authenticate] }, async (request, reply) => {
-    const input = updateProfileSchema.parse(request.body);
-    const updated = await updateProfile(fastify, request.user.sub, input);
+  const currentUserId = request.user.sub;
+
+  if (request.isMultipart()) {
+    const parts = request.parts();
+
+    let bioVal: string | undefined = undefined;
+    let removeAvatarVal: string | undefined = undefined;
+    let uploadedFileStream: any = null;
+
+    for await (const part of parts) {
+      if (part.type === 'file') {
+        if (part.fieldname === 'avatar' || part.fieldname === 'file') {
+          uploadedFileStream = part;
+        }
+      } else {
+        // Handle text fields
+        if (part.fieldname === 'bio') {
+          bioVal = part.value as string;
+        }
+        if (part.fieldname === 'removeAvatar') {
+          removeAvatarVal = part.value as string;
+        }
+      }
+    }
+
+    const parsedInput = updateProfileSchema.parse({
+      ...(bioVal !== undefined && { bio: bioVal }),
+    });
+
+    let avatarUrlToSet: string | null | undefined = undefined;
+
+    // Case A: User explicitly requests avatar removal
+    if (removeAvatarVal === 'true' || removeAvatarVal === '1') {
+      avatarUrlToSet = null;
+    } 
+    // Case B: User uploaded a new file stream
+    else if (uploadedFileStream && uploadedFileStream.filename) {
+      const { fileUrl } = await uploadToStorage(uploadedFileStream);
+      avatarUrlToSet = fileUrl;
+    }
+
+    const updated = await updateProfile(fastify, currentUserId, {
+      ...parsedInput,
+      ...(avatarUrlToSet !== undefined && { avatarUrl: avatarUrlToSet }),
+    });
+
     return updated;
-  });
+  }
+
+  // Standard JSON payload fallback
+  const input = updateProfileSchema.parse(request.body);
+  const updated = await updateProfile(fastify, currentUserId, input);
+  return updated;
+});
 
 
   // 2. DYNAMIC PARAMETER ROUTES (/:username)
