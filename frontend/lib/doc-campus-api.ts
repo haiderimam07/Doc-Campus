@@ -81,7 +81,7 @@ export async function logout() {
 }
 
 export function getSummary() {
-  return api<Pick<User, 'id' | 'username' | 'avatarUrl'>>('/api/users/me/summary');
+  return api<Pick<User, 'id' | 'username' | 'avatarUrl' | 'bio'> & { postCount: number }>('/api/users/me/summary');
 }
 
 export function getProfile(username: string) {
