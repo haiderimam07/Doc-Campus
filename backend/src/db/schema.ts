@@ -23,6 +23,7 @@ export const fileTypeEnum = pgEnum('file_type', [
   'pdf',
   'image',
   'doc',
+  'link',
   'other',
 ]);
 

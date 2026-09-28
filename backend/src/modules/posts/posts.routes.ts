@@ -1,5 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import { createPostSchema, postParamsSchema, feedQuerySchema } from './posts.schema.js';
+import {
+  createPostSchema,
+  createLinkPostSchema,
+  postParamsSchema,
+  feedQuerySchema,
+} from './posts.schema.js';
 import { uploadToStorage, deleteFromStorage } from '../../lib/upload.js'; // Your storage utility (Cloudinary/S3)
 import {
   createPost,
@@ -26,30 +31,68 @@ export default async function postsRoutes(fastify: FastifyInstance) {
     return feed;
   });
 
-  // POST /posts — Create Post (Multipart File Upload + Description)
+  // POST /posts — Create Post
+  //   • multipart  → file upload + optional description
+  //   • JSON       → website link + optional description
   fastify.post('/', { preHandler: [fastify.authenticate] }, async (request, reply) => {
-    const data = await request.file();
+    // ---- Link post (JSON body) ----
+    if (!request.isMultipart()) {
+      const { link, description } = createLinkPostSchema.parse(request.body);
 
-    if (!data) {
-      return reply.status(400).send({ error: 'A file attachment is required' });
+      const post = await createPost(fastify, request.user.sub, {
+        description,
+        fileUrl: link,
+        fileType: 'link',
+      });
+
+      return reply.status(201).send(post);
     }
 
-    const descriptionField = data.fields.description;
-    const { description } = createPostSchema.pick({ description: true }).parse({
-      description: descriptionField && 'value' in descriptionField ? descriptionField.value : undefined,
-    });
-
-    const { fileUrl, fileType } = await uploadToStorage(data);
+    // ---- File post (multipart) ----
+    // FIX: read fields and file via request.parts() so the description is captured
+    // regardless of whether the client sends it before or after the file.
+    let rawDescription: string | undefined;
+    let uploaded: Awaited<ReturnType<typeof uploadToStorage>> | undefined;
 
     try {
-      const post = await createPost(fastify, request.user.sub, { description, fileUrl, fileType });
+      for await (const part of request.parts()) {
+        if (part.type === 'field') {
+          if (part.fieldname === 'description') {
+            rawDescription = String(part.value);
+          }
+        } else if (part.type === 'file') {
+          if (uploaded) {
+            // ignore any extra files, but drain the stream so parsing continues
+            part.file.resume();
+            continue;
+          }
+          uploaded = await uploadToStorage(part);
+        }
+      }
+
+      if (!uploaded) {
+        return reply.status(400).send({ error: 'A file attachment is required' });
+      }
+
+      const { description } = createPostSchema
+        .pick({ description: true })
+        .parse({ description: rawDescription });
+
+      const post = await createPost(fastify, request.user.sub, {
+        description,
+        fileUrl: uploaded.fileUrl,
+        fileType: uploaded.fileType,
+      });
 
       // 3. Enqueue BullMQ OCR processing job
       // await fastify.ocrQueue.add('process-ocr', { postId: post.id, fileUrl: post.fileUrl });
 
       return reply.status(201).send(post);
     } catch (err) {
-      await deleteFromStorage(fileUrl).catch(() => {});
+      // clean up the orphaned R2 upload if anything failed after it succeeded
+      if (uploaded) {
+        await deleteFromStorage(uploaded.fileUrl).catch(() => {});
+      }
       throw err;
     }
   });
@@ -69,7 +112,7 @@ export default async function postsRoutes(fastify: FastifyInstance) {
     const { username } = request.params as { username: string };
     const { cursor, limit } = feedQuerySchema.parse(request.query);
 
-    const userPosts = await getPostsByUsername(fastify, username, { cursor, limit});
+    const userPosts = await getPostsByUsername(fastify, username, { cursor, limit });
 
     return userPosts;
   });

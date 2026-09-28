@@ -9,6 +9,21 @@ interface FeedQueryParams {
   limit?: number;
 }
 
+// Derived from the DB schema, so it stays correct whenever the enums change (e.g. 'link').
+type FeedPost = {
+  id: string;
+  description: string | null;
+  fileUrl: string;
+  fileType: typeof posts.$inferSelect.fileType;
+  ocrStatus: typeof posts.$inferSelect.ocrStatus;
+  createdAt: Date;
+  author: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  };
+};
+
 // 1. Create a new post
 export async function createPost(
   fastify: FastifyInstance,
@@ -22,7 +37,8 @@ export async function createPost(
       description: input.description,
       fileUrl: input.fileUrl,
       fileType: input.fileType,
-      ocrStatus: 'pending',
+      // Links have nothing to OCR, so mark them done to keep them out of the OCR queue
+      ocrStatus: input.fileType === 'link' ? 'done' : 'pending',
     })
     .returning();
 
@@ -149,19 +165,7 @@ export async function getHybridFeed(
     followedIds.push(currentUserId); // Include own posts
   }
 
-  let feedPosts: Array<{
-    id: string;
-    description: string | null;
-    fileUrl: string;
-    fileType: 'pdf' | 'image' | 'doc' | 'other';
-    ocrStatus: 'pending' | 'processing' | 'done' | 'failed';
-    createdAt: Date;
-    author: {
-      id: string;
-      username: string;
-      avatarUrl: string | null;
-    };
-  }> = [];
+  let feedPosts: FeedPost[] = [];
 
   // Step 1: Query followed network if user follows anyone
   if (followedIds.length > 0) {

@@ -4,6 +4,7 @@ import { decodeCursor, encodeCursor } from '../../lib/pagination.js';
 import { users, follows } from '../../db/schema.js';
 import { UpdateProfileInput } from './users.schema.js';
 import {  deleteFromStorage } from '../../lib/upload.js';
+import { users, follows, posts } from '../../db/schema.js';
 
 interface PaginationParams {
   cursor?: string;
@@ -20,16 +21,25 @@ const publicUserFields = {
 
 // 1. Lightweight summary for sidebar/navbar
 export async function getUserSummary(fastify: FastifyInstance, userId: string) {
-  const [user] = await fastify.db
-    .select({
-      id: users.id,
-      username: users.username,
-      avatarUrl: users.avatarUrl,
-    })
-    .from(users)
-    .where(eq(users.id, userId));
+  const [[user], [{ postCount }]] = await Promise.all([
+    fastify.db
+      .select({
+        id: users.id,
+        username: users.username,
+        avatarUrl: users.avatarUrl,
+        bio: users.bio
+      })
+      .from(users)
+      .where(eq(users.id, userId)),
+    fastify.db
+      .select({ postCount: count() })
+      .from(posts)
+      .where(eq(posts.userId, userId)), // <-- userId, not authorId
+  ]);
 
-  return user ?? null;
+  if (!user) return null;
+
+  return { ...user, postCount: Number(postCount ?? 0) };
 }
 
 // 2. Full profile lookup (handles self vs other user context)

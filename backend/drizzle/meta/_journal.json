@@ -22,6 +22,13 @@
       "when": 1790616858153,
       "tag": "0002_repair_saves_table",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790622467334,
+      "tag": "0003_messy_earthquake",
+      "breakpoints": true
     }
   ]
 }
