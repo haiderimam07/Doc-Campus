@@ -184,16 +184,15 @@ export async function updateProfile(
   userId: string,
   input: UpdateProfileInput & { avatarUrl?: string | null }
 ) {
-  // 1. Storage cleanup if avatarUrl is explicitly changed or set to null
+  let previousAvatarUrl: string | null | undefined;
+
+  // Read the old avatar before changing the database; cleanup must not block the update.
   if (input.avatarUrl !== undefined) {
     const [currentUser] = await fastify.db
       .select({ avatarUrl: users.avatarUrl })
       .from(users)
       .where(eq(users.id, userId));
-
-    if (currentUser?.avatarUrl && currentUser.avatarUrl !== input.avatarUrl) {
-      await deleteFromStorage(currentUser.avatarUrl).catch(() => {});
-    }
+    previousAvatarUrl = currentUser?.avatarUrl;
   }
 
   // 2. Build explicit update payload
@@ -228,6 +227,10 @@ export async function updateProfile(
       bio: users.bio,
       avatarUrl: users.avatarUrl,
     });
+
+  if (previousAvatarUrl && previousAvatarUrl !== input.avatarUrl) {
+    void deleteFromStorage(previousAvatarUrl).catch(() => {});
+  }
 
   return updated;
 }

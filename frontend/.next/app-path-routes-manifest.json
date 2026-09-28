@@ -8,6 +8,8 @@
   "/favicon.ico/route": "/favicon.ico",
   "/feed/page": "/feed",
   "/page": "/",
+  "/profile/[username]/page": "/profile/[username]",
+  "/profile/edit/page": "/profile/edit",
   "/profile/page": "/profile",
   "/saved/page": "/saved"
 }

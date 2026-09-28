@@ -1,4 +1,4 @@
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { MultipartFile } from '@fastify/multipart';
 import { extname } from 'node:path';
@@ -81,4 +81,37 @@ export async function deleteFromStorage(fileUrl: string): Promise<void> {
       Key: key,
     })
   );
+}
+
+export async function uploadAvatarToStorage(file: {
+  buffer: Buffer;
+  filename: string;
+  mimetype: string;
+}) {
+  const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowed.includes(file.mimetype)) {
+    throw new Error('Avatar must be a JPG, PNG, or WebP image');
+  }
+
+  const fileExt = extname(file.filename).toLowerCase() || '.bin';
+  const fileKey = `avatars/${randomUUID()}${fileExt}`;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15_000);
+  try {
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: fileKey,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        ContentLength: file.buffer.length,
+      }),
+      { abortSignal: controller.signal }
+    );
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  return { fileUrl: `${publicDomain}/${fileKey}` };
 }

@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { paginationQuerySchema, updateProfileSchema } from './users.schema.js';
-import { uploadToStorage } from '../../lib/upload.js';
+import { uploadAvatarToStorage } from '../../lib/upload.js';
 import {
   getUserSummary,
   getProfileByUsername,
@@ -26,25 +26,21 @@ export default async function usersRoutes(fastify: FastifyInstance) {
   const currentUserId = request.user.sub;
 
   if (request.isMultipart()) {
-    const parts = request.parts();
+    let bioVal: string | undefined;
+    let removeAvatarVal: string | undefined;
+    let avatarFile: { buffer: Buffer; filename: string; mimetype: string } | null = null;
 
-    let bioVal: string | undefined = undefined;
-    let removeAvatarVal: string | undefined = undefined;
-    let uploadedFileStream: any = null;
-
-    for await (const part of parts) {
+    for await (const part of request.parts()) {
       if (part.type === 'file') {
-        if (part.fieldname === 'avatar' || part.fieldname === 'file') {
-          uploadedFileStream = part;
+        // ALWAYS consume the stream, even if you don't want it
+        const buffer = await part.toBuffer();
+        if ((part.fieldname === 'avatar' || part.fieldname === 'file') && part.filename && buffer.length) {
+          avatarFile = { buffer, filename: part.filename, mimetype: part.mimetype };
         }
-      } else {
-        // Handle text fields
-        if (part.fieldname === 'bio') {
-          bioVal = part.value as string;
-        }
-        if (part.fieldname === 'removeAvatar') {
-          removeAvatarVal = part.value as string;
-        }
+      } else if (part.fieldname === 'bio') {
+        bioVal = part.value as string;
+      } else if (part.fieldname === 'removeAvatar') {
+        removeAvatarVal = part.value as string;
       }
     }
 
@@ -52,30 +48,22 @@ export default async function usersRoutes(fastify: FastifyInstance) {
       ...(bioVal !== undefined && { bio: bioVal }),
     });
 
-    let avatarUrlToSet: string | null | undefined = undefined;
-
-    // Case A: User explicitly requests avatar removal
+    let avatarUrlToSet: string | null | undefined;
     if (removeAvatarVal === 'true' || removeAvatarVal === '1') {
       avatarUrlToSet = null;
-    } 
-    // Case B: User uploaded a new file stream
-    else if (uploadedFileStream && uploadedFileStream.filename) {
-      const { fileUrl } = await uploadToStorage(uploadedFileStream);
+    } else if (avatarFile) {
+      const { fileUrl } = await uploadAvatarToStorage(avatarFile); // change to accept a buffer
       avatarUrlToSet = fileUrl;
     }
 
-    const updated = await updateProfile(fastify, currentUserId, {
+    return updateProfile(fastify, currentUserId, {
       ...parsedInput,
       ...(avatarUrlToSet !== undefined && { avatarUrl: avatarUrlToSet }),
     });
-
-    return updated;
   }
 
-  // Standard JSON payload fallback
   const input = updateProfileSchema.parse(request.body);
-  const updated = await updateProfile(fastify, currentUserId, input);
-  return updated;
+  return updateProfile(fastify, currentUserId, input);
 });
 
 

@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "headers": {
+    "link": "</_next/static/chunks/613d9a61a30b021f.css>; rel=preload; as=\"style\"",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/profile/layout,_N_T_/profile/[username]/layout,_N_T_/profile/[username]/page"
+  },
+  "postponed": "703:53[[\"username\",[\"%%drp:username:5bca94cbe5ffe%%\",\"d\"]]][0,{\"nextSegmentId\":0,\"rootFormatContext\":{\"insertionMode\":0,\"selectedValue\":null,\"tagScope\":0,\"viewTransition\":null},\"progressiveChunkSize\":12800,\"resumableState\":{\"idPrefix\":\"\",\"nextFormID\":0,\"streamingFormat\":0,\"bootstrapScripts\":[{\"src\":\"/_next/static/chunks/e95ad3442853a395.js\"}],\"instructions\":0,\"hasBody\":false,\"hasHtml\":false,\"unknownResources\":{\"font\":{}},\"dnsResources\":{},\"connectResources\":{\"default\":{},\"anonymous\":{},\"credentials\":{}},\"imageResources\":{},\"styleResources\":{\"/_next/static/chunks/613d9a61a30b021f.css\":[]},\"scriptResources\":{},\"moduleUnknownResources\":{},\"moduleScriptResources\":{}},\"replayNodes\":[],\"replaySlots\":-1}]null",
+  "segmentPaths": [
+    "/_tree",
+    "/profile/$d$username/__PAGE__",
+    "/profile/$d$username",
+    "/profile",
+    "/_index"
+  ]
+}

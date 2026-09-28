@@ -29,6 +29,7 @@ export function buildApp() {
   app.register(cors, {
     origin: 'http://localhost:3000',
     credentials: true,
+    methods: ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   });
 
   // Cookie Support
