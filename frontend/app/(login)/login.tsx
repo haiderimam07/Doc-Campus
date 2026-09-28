@@ -3,17 +3,188 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, BookOpen, Check, Eye, EyeOff, Loader2, LockKeyhole, Mail, UserRound } from 'lucide-react';
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  Eye,
+  EyeOff,
+  Loader2,
+  LockKeyhole,
+  Mail,
+  UserRound,
+} from 'lucide-react';
 import { login, register } from '@/lib/doc-campus-api';
 
-export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
+type LoginProps = { mode?: 'signin' | 'signup' };
+
+export function Login({ mode = 'signin' }: LoginProps) {
   const router = useRouter();
+
   const [isSignUp, setIsSignUp] = useState(mode === 'signup');
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
-  async function submit(event: React.FormEvent) { event.preventDefault(); setPending(true); setError(''); try { if (isSignUp) await register(form.username, form.email, form.password); else await login(form.email, form.password); router.push('/feed'); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Unable to continue'); } finally { setPending(false); } }
 
-  return <main className="auth-page"><section className="auth-showcase"><Link href="/sign-in" className="brand auth-brand"><span className="brand-mark">D</span><span>Doc<span>Campus</span></span></Link><div className="showcase-copy"><p className="eyebrow">THE CAMPUS KNOWLEDGE NETWORK</p><h1>Learn together.<br /><em>Go further.</em></h1><p>One place for the notes, resources, and people that move your learning forward.</p><div className="showcase-points"><span><Check size={15} /> Share what you know</span><span><Check size={15} /> Find your next breakthrough</span></div></div><div className="showcase-orbit orbit-one" /><div className="showcase-orbit orbit-two" /><footer>© 2026 Doc-Campus <span>Built for curious minds</span></footer></section><section className="auth-panel"><div className="auth-card"><div className="auth-card-heading"><span className="auth-icon"><BookOpen size={19} /></span><p>{isSignUp ? 'JOIN THE CAMPUS' : 'WELCOME BACK'}</p><h2>{isSignUp ? 'Create your account' : 'Sign in to Doc-Campus'}</h2><span>{isSignUp ? 'Your next idea is closer than you think.' : 'Pick up where your learning left off.'}</span></div><div className="auth-tabs"><button className={!isSignUp ? 'selected' : ''} onClick={() => setIsSignUp(false)}>Sign in</button><button className={isSignUp ? 'selected' : ''} onClick={() => setIsSignUp(true)}>Create account</button></div><form onSubmit={submit} className="auth-form">{isSignUp && <label><span><UserRound size={15} /> Username</span><input value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} placeholder="your-username" required minLength={3} maxLength={30} /></label>}<label><span><Mail size={15} /> Email address</span><input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="you@university.edu" required /></label><label><span><LockKeyhole size={15} /> Password</span><div className="password-wrap"><input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} placeholder="At least 8 characters" required minLength={8} maxLength={72} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password visibility">{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div></label>{error && <p className="form-error">{error}</p>}<button className="auth-submit" disabled={pending}>{pending ? <Loader2 className="spin" size={18} /> : isSignUp ? 'Create my account' : 'Sign in'} {!pending && <ArrowRight size={18} />}</button></form><p className="auth-legal">By continuing, you agree to use Doc-Campus thoughtfully.</p></div></section></main>;
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    setPending(true);
+    setError('');
+
+    try {
+      if (isSignUp) {
+        await register(form.username, form.email, form.password);
+      } else {
+        await login(form.email, form.password);
+      }
+      router.push('/feed');
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Unable to continue');
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <main className="auth-page">
+      {/* ---------- Left: showcase panel ---------- */}
+      <section className="auth-showcase">
+        <Link href="/sign-in" className="brand auth-brand">
+          <span className="brand-mark">D</span>
+          <span>
+            Doc<span>Campus</span>
+          </span>
+        </Link>
+
+        <div className="showcase-copy">
+          <p className="eyebrow">THE CAMPUS KNOWLEDGE NETWORK</p>
+
+          <h1>
+            Learn together.
+            <br />
+            <em>Go further.</em>
+          </h1>
+
+          <p>One place for the notes, resources, and people that move your learning forward.</p>
+
+          <div className="showcase-points">
+            <span>
+              <Check size={15} /> Share what you know
+            </span>
+            <span>
+              <Check size={15} /> Find your next breakthrough
+            </span>
+          </div>
+        </div>
+
+        <div className="showcase-orbit orbit-one" />
+        <div className="showcase-orbit orbit-two" />
+
+        <footer>
+          © 2026 Doc-Campus <span>Built for curious minds</span>
+        </footer>
+      </section>
+
+      {/* ---------- Right: auth form ---------- */}
+      <section className="auth-panel">
+        <div className="auth-card">
+          {/* Heading */}
+          <div className="auth-card-heading">
+            <span className="auth-icon">
+              <BookOpen size={19} />
+            </span>
+            <p>{isSignUp ? 'JOIN THE CAMPUS' : 'WELCOME BACK'}</p>
+            <h2>{isSignUp ? 'Create your account' : 'Sign in to Doc-Campus'}</h2>
+            <span>
+              {isSignUp
+                ? 'Your next idea is closer than you think.'
+                : 'Pick up where your learning left off.'}
+            </span>
+          </div>
+
+          {/* Sign in / Create account tabs */}
+          <div className="auth-tabs">
+            <button className={!isSignUp ? 'selected' : ''} onClick={() => setIsSignUp(false)}>
+              Sign in
+            </button>
+            <button className={isSignUp ? 'selected' : ''} onClick={() => setIsSignUp(true)}>
+              Create account
+            </button>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={submit} className="auth-form">
+            {isSignUp && (
+              <label>
+                <span>
+                  <UserRound size={15} /> Username
+                </span>
+                <input
+                  value={form.username}
+                  onChange={(event) => setForm({ ...form, username: event.target.value })}
+                  placeholder="your-username"
+                  required
+                  minLength={3}
+                  maxLength={30}
+                />
+              </label>
+            )}
+
+            <label>
+              <span>
+                <Mail size={15} /> Email address
+              </span>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(event) => setForm({ ...form, email: event.target.value })}
+                placeholder="you@university.edu"
+                required
+              />
+            </label>
+
+            <label>
+              <span>
+                <LockKeyhole size={15} /> Password
+              </span>
+              <div className="password-wrap">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={form.password}
+                  onChange={(event) => setForm({ ...form, password: event.target.value })}
+                  placeholder="At least 8 characters"
+                  required
+                  minLength={8}
+                  maxLength={72}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label="Toggle password visibility"
+                >
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
+              </div>
+            </label>
+
+            {error && <p className="form-error">{error}</p>}
+
+            <button className="auth-submit" disabled={pending}>
+              {pending ? (
+                <Loader2 className="spin" size={18} />
+              ) : isSignUp ? (
+                'Create my account'
+              ) : (
+                'Sign in'
+              )}{' '}
+              {!pending && <ArrowRight size={18} />}
+            </button>
+          </form>
+
+          <p className="auth-legal">By continuing, you agree to use Doc-Campus thoughtfully.</p>
+        </div>
+      </section>
+    </main>
+  );
 }
