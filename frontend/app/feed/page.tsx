@@ -9,8 +9,9 @@ import { FeedProfileSummary } from '@/components/feed-profile-summary';
 import { PostCard } from '@/components/post-card';
 import { PostComposer } from '@/components/post-composer';
 import { api, getSavedPostIds, getSummary, Post, User } from '@/lib/doc-campus-api';
+import { ui } from '@/lib/ui';
 
-type SummaryUser = Pick<User, 'id' | 'username' | 'avatarUrl'> & { postCount: number };
+type SummaryUser = Pick<User, 'id' | 'username' | 'avatarUrl' | 'bio'> & { postCount: number };
 type FeedResponse = { items: Post[]; nextCursor: string | null; hasNextPage: boolean };
 
 const PAGE_SIZE = 10;
@@ -68,22 +69,15 @@ export default function FeedPage() {
 
   return (
     <AppShell user={summary.data || undefined}>
-      <div className="feed-layout">
+      {/* 1 column on phones, 2 on tablets (no right rail), 3 on desktop */}
+      <div className="grid grid-cols-1 items-start justify-center gap-6 min-[761px]:grid-cols-[210px_minmax(0,650px)] min-[1121px]:grid-cols-[240px_minmax(0,650px)_260px]">
         <FeedProfileSummary
           user={summary.data || null}
           uploadCount={uploadCount}
           savedCount={savedCount}
         />
 
-        <div className="feed-main">
-          <div className="page-intro">
-            <div>
-              <p className="eyebrow">COMMUNITY FEED</p>
-              <h1>Learn out loud.</h1>
-              <p>Useful notes, resources, and ideas from your campus.</p>
-            </div>
-          </div>
-
+        <div className="min-w-0 pb-10">
           <PostComposer onPosted={refreshFeed} />
 
           <FeedList
@@ -116,9 +110,9 @@ type FeedListProps = {
 function FeedList({ posts, savedIds, isLoading, hasError, onRetry }: FeedListProps) {
   if (hasError) {
     return (
-      <div className="empty-state">
+      <div className={ui.emptyState}>
         Could not load your campus feed.{' '}
-        <button className="text-link" onClick={onRetry}>
+        <button className={ui.textLink} onClick={onRetry}>
           Try again
         </button>
       </div>
@@ -127,20 +121,20 @@ function FeedList({ posts, savedIds, isLoading, hasError, onRetry }: FeedListPro
 
   if (isLoading) {
     return (
-      <div className="loading-stack">
-        <div />
-        <div />
-        <div />
+      <div className="grid gap-3.5">
+        {[0, 1, 2].map((index) => (
+          <div key={index} className="h-44 animate-pulse rounded-xl border border-line bg-surface" />
+        ))}
       </div>
     );
   }
 
   if (posts.length === 0) {
     return (
-      <div className="empty-state">
-        <Sparkles size={24} />
-        <h3>Your feed starts here</h3>
-        <p>Be the first to share a useful document with your campus.</p>
+      <div className={ui.emptyState}>
+        <Sparkles size={24} className="mx-auto" />
+        <h3 className="my-2.5 text-base font-semibold text-content">Your feed starts here</h3>
+        <p className="text-xs">Be the first to share a useful document with your campus.</p>
       </div>
     );
   }
@@ -176,17 +170,15 @@ function LoadMore({ hasMore, isLoadingMore, onLoadMore }: LoadMoreProps) {
   }, [hasMore, onLoadMore]);
 
   if (!hasMore) {
-    return <div className="empty-state">You're all caught up.</div>;
+    return <div className={ui.emptyState}>You're all caught up.</div>;
   }
 
   return (
-    <div ref={sentinelRef}>
+    <div ref={sentinelRef} className="text-center">
       {isLoadingMore ? (
-        <div className="loading-stack">
-          <div />
-        </div>
+        <div className="h-44 animate-pulse rounded-xl border border-line bg-surface" />
       ) : (
-        <button className="text-link" onClick={onLoadMore}>
+        <button className={ui.textLink} onClick={onLoadMore}>
           Load more
         </button>
       )}
@@ -196,23 +188,37 @@ function LoadMore({ hasMore, isLoadingMore, onLoadMore }: LoadMoreProps) {
 
 function RightRail() {
   return (
-    <aside className="right-rail">
-      <section className="focus-card">
-        <div className="focus-glow" />
-        <p className="eyebrow">TODAY'S FOCUS</p>
-        <h3>Small notes compound into big understanding.</h3>
-        <p>Share what helped you today. Someone else is probably looking for it.</p>
-        <div className="focus-line" />
+    // desktop only, sticky under the navbar
+    <aside className={`hidden min-w-0 space-y-4 min-[1121px]:block ${ui.stickyColumn}`}>
+      <section className={`${ui.card} relative overflow-hidden p-5`}>
+        <div className="pointer-events-none absolute -right-8 -top-10 size-32 rounded-full bg-accent/30 blur-3xl" />
+
+        <p className={`relative ${ui.sectionLabel}`}>Today&apos;s focus</p>
+        <h3 className="relative mb-3 mt-3 text-lg font-semibold leading-snug text-content">
+          Small notes compound into big understanding.
+        </h3>
+        <p className="relative text-xs leading-relaxed text-muted">
+          Share what helped you today. Someone else is probably looking for it.
+        </p>
+        <div className="relative mt-5 h-0.5 w-1/3 rounded bg-accent" />
       </section>
 
-      <section className="right-list">
-        <div className="side-heading">
-          <span>QUICK START</span>
-          <Sparkles size={14} />
+      <section className={`${ui.card} p-4`}>
+        <div className="mb-3 flex items-center justify-between">
+          <span className={ui.sectionLabel}>Quick start</span>
+          <Sparkles size={14} className="text-subtle" />
         </div>
-        <p><span>01</span> Upload a study resource</p>
-        <p><span>02</span> Add context for others</p>
-        <p><span>03</span> Find your next idea</p>
+
+        {['Upload a study resource', 'Add context for others', 'Find your next idea'].map(
+          (step, index) => (
+            <p key={step} className="flex gap-3 py-1.5 text-[13px] text-muted">
+              <span className="text-[10px] font-semibold leading-5 text-accent">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              {step}
+            </p>
+          )
+        )}
       </section>
     </aside>
   );

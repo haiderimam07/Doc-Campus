@@ -1,19 +1,68 @@
 @import "tailwindcss";
 
 /* =====================================================================
-   1. THEME VARIABLES & BASE
+   1. THEME TOKENS: the single place to change colors
+   Dark is the default. `.light-theme` (set on an ancestor, as today)
+   swaps the values. The old names (--ink, --panel, --line, ...) are kept
+   so pages that still use the old CSS keep working.
    ===================================================================== */
 
 :root {
-  --ink: #090b10;
-  --panel: #14171f;
-  --panel-2: #1b1e27;
-  --line: #2a2e39;
-  --muted: #8a91a1;
-  --text: #e8ebf2;
-  --blue: #65b9ff;
-  --blue-strong: #318ce1;
+  --ink: #0b0d10;          /* page background */
+  --panel: #13161a;        /* cards */
+  --panel-2: #1a1e23;      /* inputs, attachments, nested surfaces */
+  --panel-hover: #20252b;  /* hover state on surfaces */
+  --line: #242930;         /* borders and dividers */
+  --text: #f1f3f5;         /* main text */
+  --muted: #9aa3ad;        /* secondary text */
+  --subtle: #6c7580;       /* labels, placeholders */
+  --blue: #4d8cf5;         /* accent: links, active states */
+  --blue-strong: #3b7bf0;  /* accent: filled buttons */
+  --blue-soft: #4d8cf51f;  /* accent tint backgrounds */
+  --cover: linear-gradient(120deg, #3b7bf0, #5b9bff); /* profile card banner */
   --amber: #f3aa61;
+  --danger: #ff7a70;
+
+  --app-font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.light-theme {
+  --ink: #f3f5f7;
+  --panel: #ffffff;
+  --panel-2: #f1f4f7;
+  --panel-hover: #e9edf1;
+  --line: #e2e7ec;
+  --text: #16202b;
+  --muted: #5f6b7a;
+  --subtle: #8a95a3;
+  --blue: #2563eb;
+  --blue-strong: #2b6ff0;
+  --blue-soft: #2563eb1a;
+  --cover: linear-gradient(120deg, #3b7bf0, #6aa5ff);
+  --amber: #bd6b2c;
+  --danger: #dc3b30;
+}
+
+/* Expose the tokens as Tailwind utilities:
+   bg-canvas, bg-surface, bg-surface-2, bg-surface-hover, border-line,
+   text-content, text-muted, text-subtle, text-accent, bg-accent,
+   bg-accent-strong, bg-accent-soft, text-danger ...
+   `inline` makes utilities read the variable at use time, so they follow
+   the light/dark switch automatically. */
+@theme inline {
+  --color-canvas: var(--ink);
+  --color-surface: var(--panel);
+  --color-surface-2: var(--panel-2);
+  --color-surface-hover: var(--panel-hover);
+  --color-line: var(--line);
+  --color-content: var(--text);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--blue);
+  --color-accent-strong: var(--blue-strong);
+  --color-accent-soft: var(--blue-soft);
+  --color-warn: var(--amber);
+  --color-danger: var(--danger);
 }
 
 * { box-sizing: border-box; }
@@ -26,7 +75,7 @@ body {
   color: var(--text);
 }
 
-body { font-family: Georgia, 'Times New Roman', serif; }
+body { font-family: var(--app-font); }
 
 button,
 input,
@@ -47,7 +96,7 @@ a {
 
 .app-frame {
   min-height: 100vh;
-  background: radial-gradient(circle at 50% -15%, #1e2634 0, var(--ink) 42%);
+  background: var(--ink);
 }
 
 
