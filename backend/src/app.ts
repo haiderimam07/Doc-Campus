@@ -8,6 +8,7 @@ import authPlugin from './plugins/auth.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import usersRoutes from './modules/users/users.routes.js';
 import postsRoutes from './modules/posts/posts.routes.js';
+import feedRoutes from './modules/feed/feed.routes.js';
 
 export function buildApp() {
   const app = Fastify({
@@ -41,6 +42,7 @@ export function buildApp() {
   app.register(authRoutes, { prefix: '/auth' });
   app.register(usersRoutes, { prefix: '/api/users' });
   app.register(postsRoutes, { prefix: '/api/posts' });
+  app.register(feedRoutes, { prefix: '/api/posts' });
 
   // Health Check
   app.get('/health', async () => {

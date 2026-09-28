@@ -24,12 +24,12 @@ export default async function postsRoutes(fastify: FastifyInstance) {
   });
 
   // GET /posts/feed — Unified Hybrid Feed (optional auth, guest fallback)
-  fastify.get('/feed', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {
-    const { cursor, limit } = feedQuerySchema.parse(request.query);
-    const currentUserId = request.user?.sub ?? null;
-    const feed = await getHybridFeed(fastify, currentUserId, { cursor, limit });
-    return feed;
-  });
+  // fastify.get('/feed', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {
+  //   const { cursor, limit } = feedQuerySchema.parse(request.query);
+  //   const currentUserId = request.user?.sub ?? null;
+  //   const feed = await getHybridFeed(fastify, currentUserId, { cursor, limit });
+  //   return feed;
+  // });
 
   // POST /posts — Create Post
   //   • multipart  → file upload + optional description
