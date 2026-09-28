@@ -8,11 +8,11 @@ export default async function authRoutes(fastify: FastifyInstance) {
         const input = registerSchema.parse(request.body);
         const user = await registerUser(fastify, input);
         const { accessToken, refreshToken } = issueTokens(fastify, user.id);
-
+        const isProd = env.NODE_ENV === 'production';
         reply.setCookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax',
             path: '/auth/refresh',
             maxAge: 60 * 60 * 24 * 30,
         });
@@ -24,11 +24,11 @@ export default async function authRoutes(fastify: FastifyInstance) {
         const input = loginSchema.parse(request.body);
         const user = await validateCredentials(fastify, input);
         const { accessToken, refreshToken } = issueTokens(fastify, user.id);
-
+        const isProd = env.NODE_ENV === 'production';
         reply.setCookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax',
             path: '/auth/refresh',
             maxAge: 60 * 60 * 24 * 30,
         });
@@ -53,7 +53,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
                     error: 'Invalid refresh token',
                 });
             }
-            const { accessToken } = issueTokens(fastify, (decoded as any).sub);
+            const { accessToken } = issueTokens(fastify, decoded.sub as string);
             return { accessToken };
         } catch {
             return reply.code(401).send({ error: 'Invalid or expired refresh token' });
@@ -61,7 +61,12 @@ export default async function authRoutes(fastify: FastifyInstance) {
     });
 
     fastify.post('/logout', async (request, reply) => {
-        reply.clearCookie('refreshToken', { path: '/auth/refresh' });
+        const isProd = env.NODE_ENV === 'production';
+        reply.clearCookie('refreshToken', {
+            path: '/auth/refresh',
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax',
+        });
         return { success: true };
     });
 }

@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { eq, and, desc, or, lt, inArray, notInArray } from 'drizzle-orm';
 import { decodeCursor, encodeCursor } from '../../lib/pagination.js';
-import { posts, users, follows } from '../../db/schema.js';
+import { posts, users, follows, saves } from '../../db/schema.js';
 import { CreatePostInput } from './posts.schema.js';
 
 interface FeedQueryParams {
@@ -232,4 +232,19 @@ export async function getHybridFeed(
       : null;
 
   return { items, nextCursor, hasNextPage };
+}
+
+export async function savePost(fastify: FastifyInstance, postId: string, userId: string) {
+  await fastify.db.insert(saves).values({ postId, userId }).onConflictDoNothing();
+  return { saved: true };
+}
+
+export async function unsavePost(fastify: FastifyInstance, postId: string, userId: string) {
+  await fastify.db.delete(saves).where(and(eq(saves.postId, postId), eq(saves.userId, userId)));
+  return { saved: false };
+}
+
+export async function getSavedPostIds(fastify: FastifyInstance, userId: string) {
+  const records = await fastify.db.select({ postId: saves.postId }).from(saves).where(eq(saves.userId, userId));
+  return { items: records.map((record) => record.postId) };
 }

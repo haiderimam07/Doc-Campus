@@ -1,0 +1,13 @@
+{
+  "/(login)/sign-in/page": "app/(login)/sign-in/page.js",
+  "/(login)/sign-up/page": "app/(login)/sign-up/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/team/route": "app/api/team/route.js",
+  "/api/user/route": "app/api/user/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/feed/page": "app/feed/page.js",
+  "/page": "app/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/saved/page": "app/saved/page.js"
+}

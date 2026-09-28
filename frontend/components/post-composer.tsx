@@ -1,0 +1,12 @@
+'use client';
+
+import { FileImage, FileText, Paperclip, Send, Sparkles, X } from 'lucide-react';
+import { useState } from 'react';
+import { Avatar } from '@/components/doc-campus-shell';
+import { api } from '@/lib/doc-campus-api';
+
+export function PostComposer({ onPosted }: { onPosted: () => void }) {
+  const [file, setFile] = useState<File | null>(null); const [description, setDescription] = useState(''); const [open, setOpen] = useState(false); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  async function submit(event: React.FormEvent) { event.preventDefault(); if (!file) return setError('Choose a PDF, image, or document first.'); setBusy(true); setError(''); const form = new FormData(); form.append('file', file); if (description) form.append('description', description); try { await api('/api/posts', { method: 'POST', body: form }); setDescription(''); setFile(null); setOpen(false); onPosted(); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Upload failed'); } finally { setBusy(false); } }
+  return <section className={`composer ${open ? 'composer-open' : ''}`}><div className="composer-head"><Avatar username="D" /><button className="composer-prompt" onClick={() => setOpen(true)}>Share a document or a study note...</button></div>{open && <form onSubmit={submit}><textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="What are you working on? Add context for your classmates..." maxLength={2000} autoFocus /><div className="composer-footer"><label className="upload-control"><Paperclip size={17} /> {file ? file.name : 'Attach file'}<input type="file" accept="image/*,.pdf,.doc,.docx" onChange={(event) => setFile(event.target.files?.[0] || null)} /></label><span className="char-count">{description.length}/2000</span><button className="primary-button" disabled={busy || !file}>{busy ? 'Uploading...' : 'Publish'} <Send size={16} /></button></div>{error && <p className="form-error">{error}</p>}<button type="button" className="composer-close" onClick={() => setOpen(false)}><X size={16} /></button></form>} {!open && <div className="composer-tools"><button onClick={() => setOpen(true)}><FileImage size={17} /> Photo</button><button onClick={() => setOpen(true)}><FileText size={17} /> Document</button><button onClick={() => setOpen(true)}><Sparkles size={17} /> Study note</button></div>}</section>;
+}

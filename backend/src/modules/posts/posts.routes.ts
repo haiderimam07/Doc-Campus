@@ -7,9 +7,16 @@ import {
   getPostsByUsername,
   deletePost,
   getHybridFeed,
+  savePost,
+  unsavePost,
+  getSavedPostIds,
 } from './posts.service.js';
 
 export default async function postsRoutes(fastify: FastifyInstance) {
+
+  fastify.get('/saved', { preHandler: [fastify.authenticate] }, async (request) => {
+    return getSavedPostIds(fastify, request.user.sub);
+  });
 
   // GET /posts/feed — Unified Hybrid Feed (optional auth, guest fallback)
   fastify.get('/feed', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {
@@ -45,6 +52,16 @@ export default async function postsRoutes(fastify: FastifyInstance) {
       await deleteFromStorage(fileUrl).catch(() => {});
       throw err;
     }
+  });
+
+  fastify.post('/:id/save', { preHandler: [fastify.authenticate] }, async (request, reply) => {
+    const { id } = postParamsSchema.parse(request.params);
+    return savePost(fastify, id, request.user.sub);
+  });
+
+  fastify.delete('/:id/save', { preHandler: [fastify.authenticate] }, async (request, reply) => {
+    const { id } = postParamsSchema.parse(request.params);
+    return unsavePost(fastify, id, request.user.sub);
   });
 
   // GET /posts/user/:username — User Profile Posts (cursor-paginated, same shape as /feed)
