@@ -11,7 +11,7 @@ export type Post = {
   id: string;
   description: string | null;
   fileUrl: string;
-  fileType: 'pdf' | 'image' | 'doc' | 'other';
+  fileType: 'pdf' | 'image' | 'doc' | 'link' | 'other';
   ocrStatus: 'pending' | 'processing' | 'done' | 'failed';
   createdAt: string;
   author: Pick<User, 'id' | 'username' | 'avatarUrl'>;

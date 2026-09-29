@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { eq, and, count, desc, lt } from 'drizzle-orm';
 import { decodeCursor, encodeCursor } from '../../lib/pagination.js';
-import { users, follows } from '../../db/schema.js';
 import { UpdateProfileInput } from './users.schema.js';
 import {  deleteFromStorage } from '../../lib/upload.js';
 import { users, follows, posts } from '../../db/schema.js';

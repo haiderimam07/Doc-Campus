@@ -506,6 +506,10 @@
     }
   }
 
+  .m-0 {
+    margin: calc(var(--spacing) * 0);
+  }
+
   .-mx-1 {
     margin-inline: calc(var(--spacing) * -1);
   }
@@ -843,6 +847,10 @@
 
   .cursor-pointer {
     cursor: pointer;
+  }
+
+  .list-none {
+    list-style-type: none;
   }
 
   .auto-rows-min {
