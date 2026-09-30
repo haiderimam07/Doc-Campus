@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { Bookmark, FileText, Heart, Link2, MessageCircle, MoreHorizontal, Share2 } from 'lucide-react';
-import { memo, useState } from 'react';
+import { memo, useRef, useState } from 'react';
+import { CommentsSection } from '@/components/comments-sections';
 import { Avatar } from '@/components/doc-campus-shell';
-import { Post } from '@/lib/doc-campus-api';
+import { likePost, Post, sharePost, unlikePost } from '@/lib/doc-campus-api';
+import { formatCount, timeAgo } from '@/lib/format';
 import { ui } from '@/lib/ui';
 
 // Icon box colors per file type
@@ -20,16 +22,6 @@ const attachmentBase =
 
 const actionButton =
   'inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted transition-colors hover:bg-surface-2 hover:text-accent disabled:cursor-not-allowed disabled:opacity-60';
-
-// Consider moving these two helpers to lib/format.ts so they can be unit-tested and reused.
-function timeAgo(value: string) {
-  const seconds = Math.max(1, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
-
-  if (seconds < 60) return `${seconds}s`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
-  return `${Math.floor(seconds / 86400)}d`;
-}
 
 // "https://www.example.com/a/b" -> "example.com"
 function getHostname(url: string) {
@@ -55,8 +47,17 @@ type PostCardProps = {
 
 export const PostCard = memo(function PostCard({ post, isSaved, onToggleSave }: PostCardProps) {
   const [busy, setBusy] = useState(false);
-  const [saveError, setSaveError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [shareLabel, setShareLabel] = useState('Share');
+
+  // Like / comment / share state lives here. It starts from the feed data and is then updated
+  // by the server responses, so the feed list itself never has to re-render for a like.
+  const [liked, setLiked] = useState(post.likedByMe ?? false);
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+  const [commentCount, setCommentCount] = useState(post.commentCount ?? 0);
+  const [shareCount, setShareCount] = useState(post.shareCount ?? 0);
+  const [showComments, setShowComments] = useState(false);
+  const likeBusy = useRef(false); // ignore clicks while a like request is in flight
 
   const profileHref = `/profile/${post.author.username}`;
 
@@ -64,14 +65,39 @@ export const PostCard = memo(function PostCard({ post, isSaved, onToggleSave }: 
     if (busy) return;
 
     setBusy(true);
-    setSaveError('');
+    setActionError('');
 
     try {
       await onToggleSave(post.id, isSaved); // parent rolls the cache back on failure
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Could not update saved posts');
+      setActionError(error instanceof Error ? error.message : 'Could not update saved posts');
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function handleToggleLike() {
+    if (likeBusy.current) return;
+    likeBusy.current = true;
+
+    const wasLiked = liked;
+    const previousCount = likeCount;
+
+    // Optimistic update, rolled back if the request fails
+    setLiked(!wasLiked);
+    setLikeCount(Math.max(0, previousCount + (wasLiked ? -1 : 1)));
+    setActionError('');
+
+    try {
+      const result = wasLiked ? await unlikePost(post.id) : await likePost(post.id);
+      setLiked(result.liked);
+      setLikeCount(result.likeCount);
+    } catch (error) {
+      setLiked(wasLiked);
+      setLikeCount(previousCount);
+      setActionError(error instanceof Error ? error.message : 'Could not update like');
+    } finally {
+      likeBusy.current = false;
     }
   }
 
@@ -85,7 +111,16 @@ export const PostCard = memo(function PostCard({ post, isSaved, onToggleSave }: 
         setTimeout(() => setShareLabel('Share'), 2000);
       }
     } catch {
-      // user dismissed the share sheet, or clipboard access was denied: nothing to do
+      // user dismissed the share sheet, or clipboard access was denied: don't count it
+      return;
+    }
+
+    // Only a completed share is recorded. A failure here shouldn't bother the user.
+    try {
+      const result = await sharePost(post.id);
+      setShareCount(result.shareCount);
+    } catch {
+      // ignore
     }
   }
 
@@ -136,25 +171,28 @@ export const PostCard = memo(function PostCard({ post, isSaved, onToggleSave }: 
 
       {/* Actions */}
       <div className="mt-4 flex items-center gap-1 border-t border-line pt-2">
-        {/* Disabled (not just titled) until the backend interaction routes exist */}
         <button
           type="button"
-          className={actionButton}
-          disabled
-          title="Likes are coming soon"
+          className={`${actionButton} ${liked ? 'text-accent' : ''}`}
+          onClick={handleToggleLike}
+          aria-pressed={liked}
         >
-          <Heart size={18} aria-hidden="true" /> Like
+          <Heart size={18} fill={liked ? 'currentColor' : 'none'} aria-hidden="true" />
+          <span className="tabular-nums">{formatCount(likeCount)}</span>
         </button>
         <button
           type="button"
-          className={actionButton}
-          disabled
-          title="Comments are coming soon"
+          className={`${actionButton} ${showComments ? 'text-accent' : ''}`}
+          onClick={() => setShowComments((open) => !open)}
+          aria-expanded={showComments}
+          aria-controls={`comments-${post.id}`}
         >
-          <MessageCircle size={18} aria-hidden="true" /> Comment
+          <MessageCircle size={18} aria-hidden="true" />
+          <span className="tabular-nums">{formatCount(commentCount)}</span>
         </button>
         <button type="button" className={actionButton} onClick={handleShare}>
           <Share2 size={18} aria-hidden="true" /> <span aria-live="polite">{shareLabel}</span>
+          {shareCount > 0 && <span className="tabular-nums">{formatCount(shareCount)}</span>}
         </button>
         <button
           type="button"
@@ -168,10 +206,17 @@ export const PostCard = memo(function PostCard({ post, isSaved, onToggleSave }: 
         </button>
       </div>
 
-      {saveError && (
+      {actionError && (
         <p role="alert" className="mt-2 text-xs text-danger">
-          {saveError}
+          {actionError}
         </p>
+      )}
+
+      {showComments && (
+        <CommentsSection
+          postId={post.id}
+          onCountChange={(delta) => setCommentCount((count) => Math.max(0, count + delta))}
+        />
       )}
     </article>
   );

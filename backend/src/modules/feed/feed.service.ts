@@ -81,6 +81,10 @@ export async function getHybridFeed(
       fileUrl: posts.fileUrl,
       fileType: posts.fileType,
       ocrStatus: posts.ocrStatus,
+      likeCount: posts.likeCount,
+      commentCount: posts.commentCount,
+      saveCount: posts.saveCount,
+      shareCount: posts.shareCount,
       createdAt: posts.createdAt,
       author: {
         id: users.id,

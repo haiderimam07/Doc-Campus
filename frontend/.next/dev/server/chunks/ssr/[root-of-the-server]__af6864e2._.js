@@ -29,16 +29,30 @@ module.exports = mod;
 __turbopack_context__.s([
     "API_URL",
     ()=>API_URL,
+    "addComment",
+    ()=>addComment,
     "api",
     ()=>api,
+    "deleteComment",
+    ()=>deleteComment,
+    "editComment",
+    ()=>editComment,
+    "getComments",
+    ()=>getComments,
     "getConnections",
     ()=>getConnections,
     "getProfile",
     ()=>getProfile,
+    "getReplies",
+    ()=>getReplies,
     "getSavedPostIds",
     ()=>getSavedPostIds,
     "getSummary",
     ()=>getSummary,
+    "likeComment",
+    ()=>likeComment,
+    "likePost",
+    ()=>likePost,
     "login",
     ()=>login,
     "logout",
@@ -49,6 +63,12 @@ __turbopack_context__.s([
     ()=>savePost,
     "setAccessToken",
     ()=>setAccessToken,
+    "sharePost",
+    ()=>sharePost,
+    "unlikeComment",
+    ()=>unlikeComment,
+    "unlikePost",
+    ()=>unlikePost,
     "unsavePost",
     ()=>unsavePost,
     "updateProfile",
@@ -165,6 +185,68 @@ function unsavePost(postId) {
 }
 function getSavedPostIds() {
     return api('/api/posts/saved');
+}
+function likePost(postId) {
+    return api(`/api/posts/${postId}/like`, {
+        method: 'PUT'
+    });
+}
+function unlikePost(postId) {
+    return api(`/api/posts/${postId}/like`, {
+        method: 'DELETE'
+    });
+}
+function likeComment(commentId) {
+    return api(`/api/comments/${commentId}/like`, {
+        method: 'PUT'
+    });
+}
+function unlikeComment(commentId) {
+    return api(`/api/comments/${commentId}/like`, {
+        method: 'DELETE'
+    });
+}
+/* ───────────── Comments ───────────── */ function pageQuery(limit, cursor) {
+    const params = new URLSearchParams({
+        limit: String(limit)
+    });
+    if (cursor) params.set('cursor', cursor);
+    return params.toString();
+}
+function getComments(postId, cursor, limit = 5) {
+    return api(`/api/posts/${postId}/comments?${pageQuery(limit, cursor)}`);
+}
+function getReplies(commentId, cursor, limit = 3) {
+    return api(`/api/comments/${commentId}/replies?${pageQuery(limit, cursor)}`);
+}
+function addComment(postId, body, parentId) {
+    return api(`/api/posts/${postId}/comments`, {
+        method: 'POST',
+        body: JSON.stringify(parentId ? {
+            body,
+            parentId
+        } : {
+            body
+        })
+    });
+}
+function editComment(commentId, body) {
+    return api(`/api/comments/${commentId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+            body
+        })
+    });
+}
+function deleteComment(commentId) {
+    return api(`/api/comments/${commentId}`, {
+        method: 'DELETE'
+    });
+}
+function sharePost(postId) {
+    return api(`/api/posts/${postId}/share`, {
+        method: 'POST'
+    });
 }
 ;
 }),

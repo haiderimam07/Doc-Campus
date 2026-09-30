@@ -1251,6 +1251,34 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
+"[project]/lib/format.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+// "5s", "12m", "3h", "2d"
+__turbopack_context__.s([
+    "formatCount",
+    ()=>formatCount,
+    "timeAgo",
+    ()=>timeAgo
+]);
+function timeAgo(value) {
+    const seconds = Math.max(1, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
+    if (seconds < 60) return `${seconds}s`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+    return `${Math.floor(seconds / 86400)}d`;
+}
+// 1200 -> "1.2K"
+const compact = new Intl.NumberFormat('en', {
+    notation: 'compact'
+});
+function formatCount(value) {
+    return compact.format(value);
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
 "[project]/components/post-card.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
@@ -1268,12 +1296,22 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$lu
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$511$2e$0_react$40$19$2e$1$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$ellipsis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MoreHorizontal$3e$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/lucide-react@0.511.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/ellipsis.js [app-client] (ecmascript) <export default as MoreHorizontal>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$511$2e$0_react$40$19$2e$1$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$share$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Share2$3e$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/lucide-react@0.511.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/share-2.js [app-client] (ecmascript) <export default as Share2>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.6.0-canary.59_react_4a6bd33c06d067053554ee20197f74c7/node_modules/next/dist/compiled/react-experimental/index.js [app-client] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module '@/components/comments-section'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$doc$2d$campus$2d$shell$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/components/doc-campus-shell.tsx [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/avatar.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$doc$2d$campus$2d$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/doc-campus-api.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/format.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$ui$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/ui.ts [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
+;
+;
+;
 ;
 ;
 ;
@@ -1288,14 +1326,6 @@ const FILE_ICON_STYLES = {
 };
 const attachmentBase = 'flex min-h-[76px] items-center gap-3.5 rounded-lg border border-line bg-surface-2 p-3.5 transition-colors hover:border-accent/50';
 const actionButton = 'inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted transition-colors hover:bg-surface-2 hover:text-accent disabled:cursor-not-allowed disabled:opacity-60';
-// Consider moving these two helpers to lib/format.ts so they can be unit-tested and reused.
-function timeAgo(value) {
-    const seconds = Math.max(1, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
-    if (seconds < 60) return `${seconds}s`;
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
-    return `${Math.floor(seconds / 86400)}d`;
-}
 // "https://www.example.com/a/b" -> "example.com"
 function getHostname(url) {
     try {
@@ -1311,19 +1341,48 @@ function withArticle(noun) {
 const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["memo"])(_c = _s(function PostCard({ post, isSaved, onToggleSave }) {
     _s();
     const [busy, setBusy] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [saveError, setSaveError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [actionError, setActionError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [shareLabel, setShareLabel] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('Share');
+    // Like / comment / share state lives here. It starts from the feed data and is then updated
+    // by the server responses, so the feed list itself never has to re-render for a like.
+    const [liked, setLiked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(post.likedByMe ?? false);
+    const [likeCount, setLikeCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(post.likeCount ?? 0);
+    const [commentCount, setCommentCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(post.commentCount ?? 0);
+    const [shareCount, setShareCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(post.shareCount ?? 0);
+    const [showComments, setShowComments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const likeBusy = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false); // ignore clicks while a like request is in flight
     const profileHref = `/profile/${post.author.username}`;
     async function handleToggleSave() {
         if (busy) return;
         setBusy(true);
-        setSaveError('');
+        setActionError('');
         try {
             await onToggleSave(post.id, isSaved); // parent rolls the cache back on failure
         } catch (error) {
-            setSaveError(error instanceof Error ? error.message : 'Could not update saved posts');
+            setActionError(error instanceof Error ? error.message : 'Could not update saved posts');
         } finally{
             setBusy(false);
+        }
+    }
+    async function handleToggleLike() {
+        if (likeBusy.current) return;
+        likeBusy.current = true;
+        const wasLiked = liked;
+        const previousCount = likeCount;
+        // Optimistic update, rolled back if the request fails
+        setLiked(!wasLiked);
+        setLikeCount(Math.max(0, previousCount + (wasLiked ? -1 : 1)));
+        setActionError('');
+        try {
+            const result = wasLiked ? await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$doc$2d$campus$2d$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["unlikePost"])(post.id) : await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$doc$2d$campus$2d$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["likePost"])(post.id);
+            setLiked(result.liked);
+            setLikeCount(result.likeCount);
+        } catch (error) {
+            setLiked(wasLiked);
+            setLikeCount(previousCount);
+            setActionError(error instanceof Error ? error.message : 'Could not update like');
+        } finally{
+            likeBusy.current = false;
         }
     }
     async function handleShare() {
@@ -1338,7 +1397,15 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                 setTimeout(()=>setShareLabel('Share'), 2000);
             }
         } catch  {
-        // user dismissed the share sheet, or clipboard access was denied: nothing to do
+            // user dismissed the share sheet, or clipboard access was denied: don't count it
+            return;
+        }
+        // Only a completed share is recorded. A failure here shouldn't bother the user.
+        try {
+            const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$doc$2d$campus$2d$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["sharePost"])(post.id);
+            setShareCount(result.shareCount);
+        } catch  {
+        // ignore
         }
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
@@ -1356,12 +1423,12 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                             src: post.author.avatarUrl
                         }, void 0, false, {
                             fileName: "[project]/components/post-card.tsx",
-                            lineNumber: 101,
+                            lineNumber: 136,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 96,
+                        lineNumber: 131,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1373,7 +1440,7 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                                 children: post.author.username
                             }, void 0, false, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 105,
+                                lineNumber: 140,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1387,29 +1454,29 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                                         children: "·"
                                     }, void 0, false, {
                                         fileName: "[project]/components/post-card.tsx",
-                                        lineNumber: 112,
+                                        lineNumber: 147,
                                         columnNumber: 49
                                     }, this),
                                     ' ',
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("time", {
                                         dateTime: post.createdAt,
                                         suppressHydrationWarning: true,
-                                        children: timeAgo(post.createdAt)
+                                        children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["timeAgo"])(post.createdAt)
                                     }, void 0, false, {
                                         fileName: "[project]/components/post-card.tsx",
-                                        lineNumber: 114,
+                                        lineNumber: 149,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 111,
+                                lineNumber: 146,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 104,
+                        lineNumber: 139,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1421,18 +1488,18 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                             "aria-hidden": "true"
                         }, void 0, false, {
                             fileName: "[project]/components/post-card.tsx",
-                            lineNumber: 125,
+                            lineNumber: 160,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 120,
+                        lineNumber: 155,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 95,
+                lineNumber: 130,
                 columnNumber: 7
             }, this),
             post.description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1440,14 +1507,14 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                 children: post.description
             }, void 0, false, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 130,
+                lineNumber: 165,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Attachment, {
                 post: post
             }, void 0, false, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 135,
+                lineNumber: 170,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1455,44 +1522,62 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "button",
-                        className: actionButton,
-                        disabled: true,
-                        title: "Likes are coming soon",
+                        className: `${actionButton} ${liked ? 'text-accent' : ''}`,
+                        onClick: handleToggleLike,
+                        "aria-pressed": liked,
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$511$2e$0_react$40$19$2e$1$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$heart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Heart$3e$__["Heart"], {
                                 size: 18,
+                                fill: liked ? 'currentColor' : 'none',
                                 "aria-hidden": "true"
                             }, void 0, false, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 146,
+                                lineNumber: 180,
                                 columnNumber: 11
                             }, this),
-                            " Like"
+                            " Like",
+                            likeCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "tabular-nums",
+                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatCount"])(likeCount)
+                            }, void 0, false, {
+                                fileName: "[project]/components/post-card.tsx",
+                                lineNumber: 181,
+                                columnNumber: 29
+                            }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 140,
+                        lineNumber: 174,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "button",
-                        className: actionButton,
-                        disabled: true,
-                        title: "Comments are coming soon",
+                        className: `${actionButton} ${showComments ? 'text-accent' : ''}`,
+                        onClick: ()=>setShowComments((open)=>!open),
+                        "aria-expanded": showComments,
+                        "aria-controls": `comments-${post.id}`,
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$511$2e$0_react$40$19$2e$1$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageCircle$3e$__["MessageCircle"], {
                                 size: 18,
                                 "aria-hidden": "true"
                             }, void 0, false, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 154,
+                                lineNumber: 190,
                                 columnNumber: 11
                             }, this),
-                            " Comment"
+                            " Comment",
+                            commentCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "tabular-nums",
+                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatCount"])(commentCount)
+                            }, void 0, false, {
+                                fileName: "[project]/components/post-card.tsx",
+                                lineNumber: 191,
+                                columnNumber: 32
+                            }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 148,
+                        lineNumber: 183,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1505,7 +1590,7 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                                 "aria-hidden": "true"
                             }, void 0, false, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 157,
+                                lineNumber: 194,
                                 columnNumber: 11
                             }, this),
                             " ",
@@ -1514,13 +1599,21 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                                 children: shareLabel
                             }, void 0, false, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 157,
+                                lineNumber: 194,
                                 columnNumber: 51
+                            }, this),
+                            shareCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "tabular-nums",
+                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatCount"])(shareCount)
+                            }, void 0, false, {
+                                fileName: "[project]/components/post-card.tsx",
+                                lineNumber: 195,
+                                columnNumber: 30
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 156,
+                        lineNumber: 193,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1536,7 +1629,7 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                                 "aria-hidden": "true"
                             }, void 0, false, {
                                 fileName: "[project]/components/post-card.tsx",
-                                lineNumber: 166,
+                                lineNumber: 204,
                                 columnNumber: 11
                             }, this),
                             ' ',
@@ -1544,31 +1637,39 @@ const PostCard = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$project
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 159,
+                        lineNumber: 197,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 138,
+                lineNumber: 173,
                 columnNumber: 7
             }, this),
-            saveError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+            actionError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 role: "alert",
                 className: "mt-2 text-xs text-danger",
-                children: saveError
+                children: actionError
             }, void 0, false, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 172,
+                lineNumber: 210,
+                columnNumber: 9
+            }, this),
+            showComments && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CommentsSection, {
+                postId: post.id,
+                onCountChange: (delta)=>setCommentCount((count)=>Math.max(0, count + delta))
+            }, void 0, false, {
+                fileName: "[project]/components/post-card.tsx",
+                lineNumber: 216,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/post-card.tsx",
-        lineNumber: 93,
+        lineNumber: 128,
         columnNumber: 5
     }, this);
-}, "O9aLAvUR0P9sAAw/9H4JVdhSlOY=")), "O9aLAvUR0P9sAAw/9H4JVdhSlOY=");
+}, "/Xy92E/GuF9cbnOqL+Q7i5+MVRs=")), "/Xy92E/GuF9cbnOqL+Q7i5+MVRs=");
 _c1 = PostCard;
 // Attachment: image, website link, or document (replaces the nested ternary)
 function Attachment({ post }) {
@@ -1587,12 +1688,12 @@ function Attachment({ post }) {
                 className: "block max-h-80 w-full object-cover"
             }, void 0, false, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 194,
+                lineNumber: 239,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/components/post-card.tsx",
-            lineNumber: 186,
+            lineNumber: 231,
             columnNumber: 7
         }, this);
     }
@@ -1613,12 +1714,12 @@ function Attachment({ post }) {
                     "aria-hidden": "true"
                 }, void 0, false, {
                     fileName: "[project]/components/post-card.tsx",
-                    lineNumber: 222,
+                    lineNumber: 267,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 221,
+                lineNumber: 266,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1629,7 +1730,7 @@ function Attachment({ post }) {
                         children: title
                     }, void 0, false, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 225,
+                        lineNumber: 270,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
@@ -1637,13 +1738,13 @@ function Attachment({ post }) {
                         children: subtitle
                     }, void 0, false, {
                         fileName: "[project]/components/post-card.tsx",
-                        lineNumber: 226,
+                        lineNumber: 271,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 224,
+                lineNumber: 269,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1654,13 +1755,13 @@ function Attachment({ post }) {
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/post-card.tsx",
-                lineNumber: 228,
+                lineNumber: 273,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/post-card.tsx",
-        lineNumber: 215,
+        lineNumber: 260,
         columnNumber: 5
     }, this);
 }
@@ -2527,4 +2628,4 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 }),
 ]);
 
-//# sourceMappingURL=_de79565e._.js.map
+//# sourceMappingURL=_d7ec4991._.js.map
