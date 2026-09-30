@@ -104,7 +104,7 @@ export async function listReplies(fastify: FastifyInstance, viewerId: string, co
     .select({ id: comments.id, postId: comments.postId, parentId: comments.parentId })
     .from(comments)
     .where(eq(comments.id, commentId));
-  if (!parent || parent.parentId !== null) throw notFound('Comment'); // only top-level comments have replies
+ if (!parent) throw notFound('Comment'); // only top-level comments have replies
 
   const post = await getPostOrThrow(db, parent.postId);
   const cursor = decodeCursor(q.cursor);
@@ -149,7 +149,7 @@ export async function createComment(fastify: FastifyInstance, userId: string, po
         if (!target || target.postId !== postId) throw notFound('Comment');
 
         // Threads are one level deep: replying to a reply attaches to the same top-level comment.
-        rootId = target.parentId ?? target.id;
+        rootId = target.id;
 
         // Atomic "parent must still exist and not be deleted" + reply counter bump.
         const [root] = await tx
