@@ -162,7 +162,7 @@ cd myproject
 
 ### Step 2: Configure Environment Variables
 Create and configure your `.env` file inside the `backend` directory using the template provided above.
-```
+
 
 
 ### Step 3: Run the Backend Server
