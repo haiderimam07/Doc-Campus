@@ -125,8 +125,9 @@ myproject/
     ├── postcss.config.mjs
     ├── proxy.ts
     └── tsconfig.json
+```
 
-	## ⚙️ Environment Variables Configuration
+## ⚙️ Environment Variables Configuration
 
 Create a `.env` file (or `.env.local`) inside your `backend` directory and configure the variables as shown below:
 
@@ -162,8 +163,8 @@ cd myproject
 
 ### Step 2: Configure Environment Variables
 Create and configure your `.env` file inside the `backend` directory using the template provided above.
+```
 
----
 
 ### Step 3: Run the Backend Server
 Open your first terminal tab, navigate to the backend, install dependencies, and run the development server:
