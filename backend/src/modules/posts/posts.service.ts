@@ -40,6 +40,10 @@ export async function getPostById(fastify: FastifyInstance, postId: string) {
       fileType: posts.fileType,
       ocrStatus: posts.ocrStatus,
       ocrText: posts.ocrText,
+      likeCount: posts.likeCount,
+      commentCount: posts.commentCount,
+      saveCount: posts.saveCount,
+      shareCount: posts.shareCount,
       createdAt: posts.createdAt,
       author: {
         id: users.id,
@@ -83,6 +87,10 @@ export async function getPostsByUsername(
       fileType: posts.fileType,
       ocrStatus: posts.ocrStatus,
       ocrText: posts.ocrText,
+      likeCount: posts.likeCount,
+      commentCount: posts.commentCount,
+      saveCount: posts.saveCount,
+      shareCount: posts.shareCount,
       createdAt: posts.createdAt,
       author: {
         id: users.id,
@@ -131,13 +139,32 @@ export async function deletePost(
 
 
 // 6. Saved posts
+// export async function savePost(fastify: FastifyInstance, postId: string, userId: string) {
+//   await fastify.db.insert(saves).values({ postId, userId }).onConflictDoNothing();
+//   return { saved: true };
+// }
+
+// export async function unsavePost(fastify: FastifyInstance, postId: string, userId: string) {
+//   await fastify.db.delete(saves).where(and(eq(saves.postId, postId), eq(saves.userId, userId)));
+//   return { saved: false };
+// }
 export async function savePost(fastify: FastifyInstance, postId: string, userId: string) {
-  await fastify.db.insert(saves).values({ postId, userId }).onConflictDoNothing();
+  await fastify.db.transaction(async (tx) => {
+    const inserted = await tx.insert(saves).values({ postId, userId }).onConflictDoNothing().returning({ postId: saves.postId });
+    if (inserted.length > 0) {
+      await tx.update(posts).set({ saveCount: sql`${posts.saveCount} + 1` }).where(eq(posts.id, postId));
+    }
+  });
   return { saved: true };
 }
 
 export async function unsavePost(fastify: FastifyInstance, postId: string, userId: string) {
-  await fastify.db.delete(saves).where(and(eq(saves.postId, postId), eq(saves.userId, userId)));
+  await fastify.db.transaction(async (tx) => {
+    const deleted = await tx.delete(saves).where(and(eq(saves.postId, postId), eq(saves.userId, userId))).returning({ postId: saves.postId });
+    if (deleted.length > 0) {
+      await tx.update(posts).set({ saveCount: sql`${posts.saveCount} - 1` }).where(eq(posts.id, postId));
+    }
+  });
   return { saved: false };
 }
 
