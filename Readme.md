@@ -80,10 +80,6 @@ myproject/
     │   │   ├── login.tsx
     │   │   ├── sign-in
     │   │   └── sign-up
-    │   ├── api
-    │   │   ├── stripe
-    │   │   ├── team
-    │   │   └── user
     │   ├── favicon.ico
     │   ├── feed
     │   │   ├── [postId]
@@ -173,6 +169,7 @@ Open your first terminal tab, navigate to the backend, install dependencies, and
 cd backend
 pnpm install
 pnpm dev
+```
 
 ### Step 4: Run the Frontend Application
 Open a second terminal tab, navigate to the frontend, install dependencies, and run the development server:
@@ -181,6 +178,7 @@ Open a second terminal tab, navigate to the frontend, install dependencies, and 
 cd frontend
 pnpm install
 pnpm dev
+```
 
 ### 📦 Database Migrations (Drizzle ORM)
 To push schema changes and synchronize your PostgreSQL database tables via Drizzle Kit:
@@ -188,3 +186,4 @@ To push schema changes and synchronize your PostgreSQL database tables via Drizz
 ```bash
 cd backend
 pnpm drizzle-kit push
+```
