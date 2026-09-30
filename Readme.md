@@ -145,6 +145,8 @@ R2_PUBLIC_DOMAIN=cloudfare
 
 Token_Value=random generated secret
 
+```
+
 ## Installation & Getting Started Guide
 
 ### Prerequisites
