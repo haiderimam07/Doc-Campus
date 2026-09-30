@@ -147,6 +147,10 @@ export function getSavedPostIds() {
   return api<{ items: string[] }>('/api/posts/saved');
 }
 
+export function getPost(postId: string) {
+  return api<Post>(`/api/posts/${postId}`);
+}
+
 /* ───────────── Likes ───────────── */
 
 type LikeResult = { liked: boolean; likeCount: number };

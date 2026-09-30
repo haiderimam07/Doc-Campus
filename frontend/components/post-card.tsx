@@ -102,11 +102,13 @@ export const PostCard = memo(function PostCard({ post, isSaved, onToggleSave }: 
   }
 
   async function handleShare() {
+    const postUrl = `${window.location.origin}/feed/${post.id}`;
+
     try {
       if (navigator.share) {
-        await navigator.share({ url: post.fileUrl });
+        await navigator.share({ url: postUrl });
       } else {
-        await navigator.clipboard.writeText(post.fileUrl);
+        await navigator.clipboard.writeText(postUrl);
         setShareLabel('Link copied');
         setTimeout(() => setShareLabel('Share'), 2000);
       }

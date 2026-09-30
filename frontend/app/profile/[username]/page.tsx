@@ -1,6 +1,7 @@
 'use client';
 
 import { CalendarDays, FileText, Link2, MapPin, UserPlus, UserRoundCheck } from 'lucide-react';
+import Link from 'next/link';
 import useSWR from 'swr';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -146,7 +147,7 @@ export default function PublicProfilePage() {
 
             {documents.length ? (
               documents.map((post) => (
-                <a className="profile-post" key={post.id} href={post.fileUrl} target="_blank" rel="noreferrer">
+                <Link className="profile-post" key={post.id} href={`/feed/${post.id}`}>
                   <span className={`file-icon ${post.fileType}`}>
                     <FileText size={20} />
                   </span>
@@ -155,7 +156,7 @@ export default function PublicProfilePage() {
                     <small>Shared {new Date(post.createdAt).toLocaleDateString()}</small>
                   </span>
                   <Link2 size={17} />
-                </a>
+                </Link>
               ))
             ) : (
               <div className="empty-state">
