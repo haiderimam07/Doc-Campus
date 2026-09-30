@@ -1360,7 +1360,7 @@ function CommentForm({ placeholder, submitLabel = 'Post', initialValue = '', aut
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
                 lineNumber: 82,
-                columnNumber: 7
+                columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "flex items-center justify-end gap-3",
@@ -1373,7 +1373,7 @@ function CommentForm({ placeholder, submitLabel = 'Post', initialValue = '', aut
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
                         lineNumber: 93,
-                        columnNumber: 11
+                        columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "submit",
@@ -1383,13 +1383,13 @@ function CommentForm({ placeholder, submitLabel = 'Post', initialValue = '', aut
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
                         lineNumber: 97,
-                        columnNumber: 9
+                        columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/comments-sections.tsx",
                 lineNumber: 91,
-                columnNumber: 7
+                columnNumber: 13
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 role: "alert",
@@ -1398,17 +1398,41 @@ function CommentForm({ placeholder, submitLabel = 'Post', initialValue = '', aut
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
                 lineNumber: 106,
-                columnNumber: 9
+                columnNumber: 17
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/comments-sections.tsx",
         lineNumber: 81,
-        columnNumber: 5
+        columnNumber: 9
     }, this);
 }
 _s(CommentForm, "x8Y3G4Vav0gvEh9g3lz+Fe1tsl8=");
 _c = CommentForm;
+/* ───────────── renders a comment body, linking a leading @username ───────────── */ function CommentBody({ body }) {
+    const match = body.match(/^@([A-Za-z0-9_.-]+)(\s[\s\S]*)?$/);
+    if (!match) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+        children: body
+    }, void 0, false);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                href: `/profile/${match[1]}`,
+                className: "font-semibold text-accent hover:underline",
+                children: [
+                    "@",
+                    match[1]
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/comments-sections.tsx",
+                lineNumber: 122,
+                columnNumber: 13
+            }, this),
+            match[2]
+        ]
+    }, void 0, true);
+}
+_c1 = CommentBody;
 function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
     _s1();
     const [editing, setEditing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -1422,15 +1446,14 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
             children: "This comment was deleted."
         }, void 0, false, {
             fileName: "[project]/components/comments-sections.tsx",
-            lineNumber: 133,
-            columnNumber: 12
+            lineNumber: 150,
+            columnNumber: 16
         }, this);
     }
     async function toggleLike() {
         if (busy) return;
         const wasLiked = comment.likedByMe;
         const previousCount = comment.likeCount;
-        // Optimistic update, rolled back below if the request fails
         onPatch(comment.id, {
             likedByMe: !wasLiked,
             likeCount: Math.max(0, previousCount + (wasLiked ? -1 : 1))
@@ -1486,13 +1509,13 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                     src: author.avatarUrl
                 }, void 0, false, {
                     fileName: "[project]/components/comments-sections.tsx",
-                    lineNumber: 186,
-                    columnNumber: 9
+                    lineNumber: 202,
+                    columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 185,
-                columnNumber: 7
+                lineNumber: 201,
+                columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "min-w-0 flex-1",
@@ -1509,8 +1532,8 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                         children: author.username
                                     }, void 0, false, {
                                         fileName: "[project]/components/comments-sections.tsx",
-                                        lineNumber: 192,
-                                        columnNumber: 13
+                                        lineNumber: 208,
+                                        columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("time", {
                                         dateTime: comment.createdAt,
@@ -1519,22 +1542,22 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["timeAgo"])(comment.createdAt)
                                     }, void 0, false, {
                                         fileName: "[project]/components/comments-sections.tsx",
-                                        lineNumber: 198,
-                                        columnNumber: 13
+                                        lineNumber: 214,
+                                        columnNumber: 25
                                     }, this),
                                     comment.editedAt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-[11px] text-subtle",
                                         children: "edited"
                                     }, void 0, false, {
                                         fileName: "[project]/components/comments-sections.tsx",
-                                        lineNumber: 201,
-                                        columnNumber: 34
+                                        lineNumber: 217,
+                                        columnNumber: 46
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 191,
-                                columnNumber: 11
+                                lineNumber: 207,
+                                columnNumber: 21
                             }, this),
                             editing ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "mt-1.5",
@@ -1547,26 +1570,32 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                     onCancel: ()=>setEditing(false)
                                 }, void 0, false, {
                                     fileName: "[project]/components/comments-sections.tsx",
-                                    lineNumber: 206,
-                                    columnNumber: 15
+                                    lineNumber: 222,
+                                    columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 205,
-                                columnNumber: 13
+                                lineNumber: 221,
+                                columnNumber: 25
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "mt-0.5 whitespace-pre-wrap break-words text-sm text-content",
-                                children: comment.body
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CommentBody, {
+                                    body: comment.body ?? ''
+                                }, void 0, false, {
+                                    fileName: "[project]/components/comments-sections.tsx",
+                                    lineNumber: 233,
+                                    columnNumber: 29
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 216,
-                                columnNumber: 13
+                                lineNumber: 232,
+                                columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 190,
-                        columnNumber: 9
+                        lineNumber: 206,
+                        columnNumber: 17
                     }, this),
                     !editing && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "mt-1 flex items-center gap-3 px-1",
@@ -1583,8 +1612,8 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                         "aria-hidden": "true"
                                     }, void 0, false, {
                                         fileName: "[project]/components/comments-sections.tsx",
-                                        lineNumber: 228,
-                                        columnNumber: 15
+                                        lineNumber: 247,
+                                        columnNumber: 29
                                     }, this),
                                     "Like",
                                     comment.likeCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1592,14 +1621,14 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatCount"])(comment.likeCount)
                                     }, void 0, false, {
                                         fileName: "[project]/components/comments-sections.tsx",
-                                        lineNumber: 230,
-                                        columnNumber: 41
+                                        lineNumber: 249,
+                                        columnNumber: 55
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 222,
-                                columnNumber: 13
+                                lineNumber: 241,
+                                columnNumber: 25
                             }, this),
                             onReply && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "button",
@@ -1608,8 +1637,8 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                 children: "Reply"
                             }, void 0, false, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 233,
-                                columnNumber: 15
+                                lineNumber: 252,
+                                columnNumber: 29
                             }, this),
                             comment.isMine && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "button",
@@ -1618,8 +1647,8 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                 children: "Edit"
                             }, void 0, false, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 238,
-                                columnNumber: 15
+                                lineNumber: 257,
+                                columnNumber: 29
                             }, this),
                             canDelete && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "button",
@@ -1629,14 +1658,14 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                                 children: "Delete"
                             }, void 0, false, {
                                 fileName: "[project]/components/comments-sections.tsx",
-                                lineNumber: 243,
-                                columnNumber: 15
+                                lineNumber: 262,
+                                columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 221,
-                        columnNumber: 11
+                        lineNumber: 240,
+                        columnNumber: 21
                     }, this),
                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         role: "alert",
@@ -1644,24 +1673,24 @@ function CommentRow({ comment, canModerate, onPatch, onReply, onDeleted }) {
                         children: error
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 251,
-                        columnNumber: 11
+                        lineNumber: 270,
+                        columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 189,
-                columnNumber: 7
+                lineNumber: 205,
+                columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/comments-sections.tsx",
-        lineNumber: 184,
-        columnNumber: 5
+        lineNumber: 200,
+        columnNumber: 9
     }, this);
 }
 _s1(CommentRow, "3SZwnSh74EhDkI0BWsueeUhuLGY=");
-_c1 = CommentRow;
+_c2 = CommentRow;
 function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCountChange }) {
     _s2();
     const [replies, setReplies] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
@@ -1694,8 +1723,10 @@ function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCoun
     }
     async function submitReply(body) {
         if (!replyTarget) return;
-        // Replying to a reply is allowed: the server attaches it to this top-level comment
-        const created = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$doc$2d$campus$2d$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addComment"])(postId, body, replyTarget.id);
+        // Prefix @username only when answering a reply (not the top-level comment itself)
+        const mention = replyTarget.id !== comment.id && replyTarget.author ? `@${replyTarget.author.username} ` : '';
+        // Always parent = the top-level comment, so there is only one level of replies
+        const created = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$doc$2d$campus$2d$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addComment"])(postId, mention + body, comment.id);
         // First reply on a comment with none: nothing else to load from the server
         if (comment.replyCount === 0) {
             setLoaded(true);
@@ -1748,8 +1779,8 @@ function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCoun
                 onDeleted: handleDeleted
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 346,
-                columnNumber: 7
+                lineNumber: 369,
+                columnNumber: 13
             }, this),
             (replies.length > 0 || showRepliesButton || replyTarget) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "ml-10 border-l border-line pl-3",
@@ -1762,8 +1793,8 @@ function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCoun
                             onDeleted: handleReplyDeleted
                         }, reply.id, false, {
                             fileName: "[project]/components/comments-sections.tsx",
-                            lineNumber: 357,
-                            columnNumber: 13
+                            lineNumber: 380,
+                            columnNumber: 25
                         }, this)),
                     showRepliesButton && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "button",
@@ -1773,8 +1804,8 @@ function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCoun
                         children: loading ? 'Loading…' : !loaded ? `View ${comment.replyCount} ${comment.replyCount === 1 ? 'reply' : 'replies'}` : `View more replies${remaining > 0 ? ` (${remaining})` : ''}`
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 368,
-                        columnNumber: 13
+                        lineNumber: 391,
+                        columnNumber: 25
                     }, this),
                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         role: "alert",
@@ -1782,8 +1813,8 @@ function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCoun
                         children: error
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 378,
-                        columnNumber: 13
+                        lineNumber: 401,
+                        columnNumber: 25
                     }, this),
                     replyTarget && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "py-2",
@@ -1795,29 +1826,29 @@ function CommentThread({ postId, comment, canModerate, onPatch, onRemove, onCoun
                             onCancel: ()=>setReplyTarget(null)
                         }, void 0, false, {
                             fileName: "[project]/components/comments-sections.tsx",
-                            lineNumber: 385,
-                            columnNumber: 15
+                            lineNumber: 408,
+                            columnNumber: 29
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 384,
-                        columnNumber: 13
+                        lineNumber: 407,
+                        columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 355,
-                columnNumber: 9
+                lineNumber: 378,
+                columnNumber: 17
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/comments-sections.tsx",
-        lineNumber: 345,
-        columnNumber: 5
+        lineNumber: 368,
+        columnNumber: 9
     }, this);
 }
 _s2(CommentThread, "1jmW/javZVom0Xo2nd3kD5WMDD8=");
-_c2 = CommentThread;
+_c3 = CommentThread;
 function CommentsSection({ postId, onCountChange }) {
     _s3();
     const [items, setItems] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
@@ -1894,8 +1925,8 @@ function CommentsSection({ postId, onCountChange }) {
                 onSubmit: submitComment
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 466,
-                columnNumber: 7
+                lineNumber: 489,
+                columnNumber: 13
             }, this),
             status === 'loading' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "mt-3 grid gap-2",
@@ -1907,13 +1938,13 @@ function CommentsSection({ postId, onCountChange }) {
                         className: "h-12 animate-pulse rounded-xl bg-surface-2"
                     }, index, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 471,
-                        columnNumber: 13
+                        lineNumber: 494,
+                        columnNumber: 25
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 469,
-                columnNumber: 9
+                lineNumber: 492,
+                columnNumber: 17
             }, this),
             status === 'error' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 role: "alert",
@@ -1928,22 +1959,22 @@ function CommentsSection({ postId, onCountChange }) {
                         children: "Try again"
                     }, void 0, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 479,
-                        columnNumber: 11
+                        lineNumber: 502,
+                        columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 477,
-                columnNumber: 9
+                lineNumber: 500,
+                columnNumber: 17
             }, this),
             status === 'ready' && items.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 className: "mt-3 text-xs text-muted",
                 children: "No comments yet. Be the first to reply."
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 486,
-                columnNumber: 9
+                lineNumber: 509,
+                columnNumber: 17
             }, this),
             status === 'ready' && items.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                 className: "m-0 mt-2 list-none p-0",
@@ -1956,13 +1987,13 @@ function CommentsSection({ postId, onCountChange }) {
                         onCountChange: onCountChange
                     }, comment.id, false, {
                         fileName: "[project]/components/comments-sections.tsx",
-                        lineNumber: 492,
-                        columnNumber: 13
+                        lineNumber: 515,
+                        columnNumber: 25
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 490,
-                columnNumber: 9
+                lineNumber: 513,
+                columnNumber: 17
             }, this),
             status === 'ready' && hasMore && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                 type: "button",
@@ -1972,8 +2003,8 @@ function CommentsSection({ postId, onCountChange }) {
                 children: loadingMore ? 'Loading…' : 'View more comments'
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 506,
-                columnNumber: 9
+                lineNumber: 529,
+                columnNumber: 17
             }, this),
             moreError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$6$2e$0$2d$canary$2e$59_react_4a6bd33c06d067053554ee20197f74c7$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2d$experimental$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 role: "alert",
@@ -1981,23 +2012,24 @@ function CommentsSection({ postId, onCountChange }) {
                 children: moreError
             }, void 0, false, {
                 fileName: "[project]/components/comments-sections.tsx",
-                lineNumber: 512,
-                columnNumber: 9
+                lineNumber: 535,
+                columnNumber: 17
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/comments-sections.tsx",
-        lineNumber: 465,
-        columnNumber: 5
+        lineNumber: 488,
+        columnNumber: 9
     }, this);
 }
 _s3(CommentsSection, "RUnzQBZTJl58KVwd0dJQmEo5MFY=");
-_c3 = CommentsSection;
-var _c, _c1, _c2, _c3;
+_c4 = CommentsSection;
+var _c, _c1, _c2, _c3, _c4;
 __turbopack_context__.k.register(_c, "CommentForm");
-__turbopack_context__.k.register(_c1, "CommentRow");
-__turbopack_context__.k.register(_c2, "CommentThread");
-__turbopack_context__.k.register(_c3, "CommentsSection");
+__turbopack_context__.k.register(_c1, "CommentBody");
+__turbopack_context__.k.register(_c2, "CommentRow");
+__turbopack_context__.k.register(_c3, "CommentThread");
+__turbopack_context__.k.register(_c4, "CommentsSection");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
