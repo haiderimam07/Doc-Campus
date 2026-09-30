@@ -1,3 +1,5 @@
 {
-  "/feed/page": "app/feed/page.js"
+  "/(login)/sign-in/page": "app/(login)/sign-in/page.js",
+  "/feed/page": "app/feed/page.js",
+  "/page": "app/page.js"
 }

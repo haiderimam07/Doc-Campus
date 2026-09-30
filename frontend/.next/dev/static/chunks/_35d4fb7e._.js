@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>getComments,
     "getConnections",
     ()=>getConnections,
+    "getPost",
+    ()=>getPost,
     "getProfile",
     ()=>getProfile,
     "getReplies",
@@ -163,6 +165,9 @@ function unsavePost(postId) {
 }
 function getSavedPostIds() {
     return api('/api/posts/saved');
+}
+function getPost(postId) {
+    return api(`/api/posts/${postId}`);
 }
 function likePost(postId) {
     return api(`/api/posts/${postId}/like`, {
