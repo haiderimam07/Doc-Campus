@@ -1,188 +1,189 @@
-# SaaS Application Starter
+# 📚 DocCampus
 
-This repository contains a full-stack SaaS application split into two independently runnable TypeScript applications:
+DocCampus is a full-stack document and study resource-sharing platform designed for students and professionals to collaborate, share resources, engage in multi-level threaded discussions, and manage academic content seamlessly.
 
-- `frontend/` is a Next.js web application with authentication, a protected dashboard, team management, activity views, pricing, Stripe payments, and a local Drizzle database layer.
-- `backend/` is a Fastify API with PostgreSQL access, cookie and JWT authentication, and user/authentication routes. Its schema also provides the foundation for posts, file uploads, OCR status, tags, follows, comments, likes, and saves.
+---
 
-The frontend currently runs on port `3000`; the backend defaults to port `4000`.
+## 🛠 Tech Stack
 
-## Technology
+### **Backend**
+* **Framework:** Fastify (TypeScript)
+* **ORM:** Drizzle ORM
+* **Database:** PostgreSQL (Neon)
+* **Storage:** Cloudflare R2 (Object Storage)
+* **Authentication:** JWT (Access/Refresh tokens) with Secure Cookies
 
-### Frontend
+### **Frontend**
+* **Framework:** Next.js (App Router, TypeScript)
+* **Styling:** Tailwind CSS
+* **Package Manager:** pnpm (Monorepo Workspace setup)
 
-- Next.js 15 and React 19
-- TypeScript
-- Tailwind CSS and Radix UI primitives
-- Drizzle ORM with PostgreSQL
-- Cookie-based sessions and server actions
-- Stripe subscription and checkout integration
-- SWR for client-side data fetching
+---
 
-### Backend
-
-- Fastify 5
-- TypeScript with `tsx` for development
-- PostgreSQL with Drizzle ORM
-- Zod environment validation
-- JWT access and refresh tokens
-- Secure cookies and CORS
-
-## Repository Structure
+## 📂 Project Structure
 
 ```text
-.
-├── Readme.md                         # Project overview and setup guide
-├── frontend/                         # Next.js web application
-│   ├── app/
-│   │   ├── (login)/                  # Sign-in/sign-up pages and actions
-│   │   ├── (dashboard)/              # Protected dashboard, settings, and pricing
-│   │   ├── api/                      # Next.js route handlers
-│   │   ├── components/ui/            # Shared UI components
-│   │   ├── lib/auth/                 # Session and action-validation helpers
-│   │   ├── lib/db/                   # Drizzle client, schema, queries, seed, migrations
-│   │   └── lib/payments/              # Stripe actions and integration
-│   ├── proxy.ts                      # Request proxy/middleware entry point
-│   ├── drizzle.config.ts             # Frontend Drizzle configuration
-│   └── package.json                  # Frontend scripts and dependencies
-└── backend/                          # Fastify API service
-	├── src/
-	│   ├── app.ts                    # Fastify app construction and route registration
-	│   ├── server.ts                 # API process entry point
-	│   ├── config/env.ts             # Validated backend environment variables
-	│   ├── db/schema.ts              # Backend database tables and relations
-	│   ├── modules/auth/             # Authentication routes, schemas, and services
-	│   ├── modules/users/             # User routes, schemas, and services
-	│   ├── plugins/auth.ts            # JWT/auth plugin
-	│   ├── plugins/db.ts              # Database plugin
-	│   └── types/                    # Fastify type augmentation
-	├── drizzle/                       # Backend migrations and migration metadata
-	├── drizzle.config.ts              # Backend Drizzle configuration
-	└── package.json                  # Backend scripts and dependencies
-```
+myproject/
+├── Readme.md
+├── backend
+│   ├── drizzle
+│   │   ├── 0000_many_sunspot.sql
+│   │   ├── 0001_add_follow_pagination_index.sql
+│   │   ├── 0002_repair_saves_table.sql
+│   │   ├── 0003_messy_earthquake.sql
+│   │   └── meta
+│   │       ├── 0000_snapshot.json
+│   │       ├── 0003_snapshot.json
+│   │       └── _journal.json
+│   ├── drizzle.config.ts
+│   ├── package.json
+│   ├── pnpm-lock.yaml
+│   ├── pnpm-workspace.yaml
+│   ├── src
+│   │   ├── app.ts
+│   │   ├── config
+│   │   │   └── env.ts
+│   │   ├── db
+│   │   │   └── schema.ts
+│   │   ├── lib
+│   │   │   ├── auth.ts
+│   │   │   ├── common.schema.ts
+│   │   │   ├── cursor.ts
+│   │   │   ├── errors.ts
+│   │   │   ├── events.ts
+│   │   │   ├── pagination.ts
+│   │   │   ├── upload.ts
+│   │   │   └── validate.ts
+│   │   ├── modules
+│   │   │   ├── auth
+│   │   │   ├── comments
+│   │   │   ├── feed
+│   │   │   ├── likes
+│   │   │   ├── posts
+│   │   │   ├── shares
+│   │   │   ├── social-graph
+│   │   │   └── users
+│   │   ├── plugins
+│   │   │   ├── auth.ts
+│   │   │   └── db.ts
+│   │   ├── server.ts
+│   │   └── types
+│   │       └── fastify.d.ts
+│   └── tsconfig.json
+└── frontend
+    ├── LICENSE
+    ├── README.md
+    ├── app
+    │   ├── (dashboard)
+    │   ├── (login)
+    │   │   ├── actions.ts
+    │   │   ├── login.tsx
+    │   │   ├── sign-in
+    │   │   └── sign-up
+    │   ├── api
+    │   │   ├── stripe
+    │   │   ├── team
+    │   │   └── user
+    │   ├── favicon.ico
+    │   ├── feed
+    │   │   ├── [postId]
+    │   │   └── page.tsx
+    │   ├── globals.css
+    │   ├── layout.tsx
+    │   ├── not-found.tsx
+    │   ├── page.tsx
+    │   ├── profile
+    │   │   ├── [username]
+    │   │   ├── edit
+    │   │   └── page.tsx
+    │   └── saved
+    │       └── page.tsx
+    ├── components
+    │   ├── avatar.tsx
+    │   ├── comments-sections.tsx
+    │   ├── connections-panel.tsx
+    │   ├── doc-campus-shell.tsx
+    │   ├── feed-profile-summary.tsx
+    │   ├── feed-right-rail.tsx
+    │   ├── navbar.tsx
+    │   ├── post-card.tsx
+    │   ├── post-composer.tsx
+    │   ├── profile-editor.tsx
+    │   └── ui
+    ├── components.json
+    ├── drizzle.config.ts
+    ├── lib
+    │   ├── auth
+    │   ├── db
+    │   ├── doc-campus-api.ts
+    │   ├── format.ts
+    │   ├── ui.ts
+    │   └── utils.ts
+    ├── package.json
+    ├── pnpm-lock.yaml
+    ├── pnpm-workspace.yaml
+    ├── postcss.config.mjs
+    ├── proxy.ts
+    └── tsconfig.json
 
-## Prerequisites
+	## ⚙️ Environment Variables Configuration
 
-- Node.js compatible with the versions used by the installed dependencies
-- `pnpm` 11 or newer
-- A PostgreSQL database
-- Stripe account and Stripe CLI only when testing payments or webhooks
+Create a `.env` file (or `.env.local`) inside your `backend` directory and configure the variables as shown below:
 
-## Installation
-
-Install dependencies separately for each application:
-
-```bash
-cd frontend
-pnpm install
-
-cd ../backend
-pnpm install
-```
-
-## Configuration
-
-Create `frontend/.env` for the Next.js application. The frontend setup and payment code expect the database, session, and Stripe values used by the files under `frontend/lib`:
-
-```dotenv
-POSTGRES_URL=postgres://user:password@localhost:5432/database
-AUTH_SECRET=replace-with-a-long-random-secret
-BASE_URL=http://localhost:3000
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
-
-Stripe price IDs are selected by the pricing flow and passed to Stripe at checkout; they are not currently read from an environment variable.
-
-Create `backend/.env` with the variables validated by `backend/src/config/env.ts`:
-
-```dotenv
+```env
 NODE_ENV=development
 PORT=4000
-POSTGRES_URL=postgres://user:password@localhost:5432/database
-JWT_SECRET=replace-with-a-long-random-secret
-COOKIE_SECRET=replace-with-a-long-random-secret
-JWT_ACCESS_SECRET=replace-with-at-least-32-characters
-JWT_REFRESH_SECRET=replace-with-at-least-32-characters
-JWT_ACCESS_EXPIRES=15m
-JWT_REFRESH_EXPIRES=30d
-```
+POSTGRES_URL=neon_db_postgres_URL
+JWT_SECRET=random generated secret
+COOKIE_SECRET=random generated secret
 
-Keep frontend and backend database URLs aligned when both services should use the same database. Never commit real secrets.
+JWT_ACCESS_SECRET=random generated secret
+JWT_REFRESH_SECRET=random generated secret
 
-## Database Setup
+R2_ACCOUNT_ID=cloudfare
+R2_ACCESS_KEY_ID=cloudfare
+R2_SECRET_ACCESS_KEY=cloudfare
+R2_BUCKET_NAME=app_name
+R2_PUBLIC_DOMAIN=cloudfare
 
-From `frontend/`, create or update the frontend database:
+Token_Value=random generated secret
 
+## Installation & Getting Started Guide
+
+### Prerequisites
+Make sure you have the following installed on your machine:
+* Node.js (v18 or higher)
+* pnpm package manager
+
+### Step 1: Clone the Repository
 ```bash
-pnpm db:setup
-pnpm db:migrate
-pnpm db:seed
-```
+git clone [https://github.com/your-username/myproject.git](https://github.com/your-username/myproject.git)
+cd myproject
 
-Useful frontend database commands:
+### Step 2: Configure Environment Variables
+Create and configure your `.env` file inside the `backend` directory using the template provided above.
 
-```bash
-pnpm db:generate
-pnpm db:studio
-```
+---
 
-The backend has its own Drizzle configuration and migration directory. Generate and apply backend migrations from `backend/` with the Drizzle CLI as needed:
-
-```bash
-pnpm exec drizzle-kit generate
-pnpm exec drizzle-kit migrate
-```
-
-Because the applications currently maintain separate schema and migration directories, review both schemas before changing shared database tables.
-
-## Running Locally
-
-Start the backend in one terminal:
+### Step 3: Run the Backend Server
+Open your first terminal tab, navigate to the backend, install dependencies, and run the development server:
 
 ```bash
 cd backend
+pnpm install
 pnpm dev
-```
 
-Start the frontend in another terminal:
+### Step 4: Run the Frontend Application
+Open a second terminal tab, navigate to the frontend, install dependencies, and run the development server:
 
 ```bash
 cd frontend
+pnpm install
 pnpm dev
-```
 
-Open [http://localhost:3000](http://localhost:3000). The backend health check is available at [http://localhost:4000/health](http://localhost:4000/health).
-
-### Backend Routes
-
-- `GET /health` returns `{ "status": "ok" }`.
-- `/auth` contains authentication routes.
-- `/api/users` contains user routes.
-
-The backend CORS configuration allows credentialed requests from `http://localhost:3000` during local development.
-
-### Stripe Webhooks
-
-After installing and authenticating the Stripe CLI, forward local events to the frontend webhook route:
+### 📦 Database Migrations (Drizzle ORM)
+To push schema changes and synchronize your PostgreSQL database tables via Drizzle Kit:
 
 ```bash
-stripe login
-stripe listen --forward-to localhost:3000/api/stripe/webhook
-```
-
-## Production Checklist
-
-1. Set production database URLs and strong session/JWT secrets.
-2. Configure Stripe production keys, price IDs, and a production webhook endpoint.
-3. Set `BASE_URL` to the deployed frontend URL.
-4. Build and start the frontend with `pnpm build` and `pnpm start`.
-5. Run the backend with a production process manager and set `NODE_ENV=production`.
-6. Restrict backend CORS to the deployed frontend origin.
-
-## Development Notes
-
-- Frontend authentication and team workflows live in `frontend/app/(login)`, `frontend/app/(dashboard)`, and `frontend/lib/auth`.
-- Frontend API handlers are under `frontend/app/api`.
-- Backend features follow a module structure: routes, validation schemas, and services are grouped under `backend/src/modules`.
-- Database changes should be made through Drizzle migrations rather than editing generated SQL manually.
+cd backend
+pnpm drizzle-kit push
