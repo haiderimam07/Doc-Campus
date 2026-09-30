@@ -158,6 +158,7 @@ Make sure you have the following installed on your machine:
 ```bash
 git clone [https://github.com/your-username/myproject.git](https://github.com/your-username/myproject.git)
 cd myproject
+```
 
 ### Step 2: Configure Environment Variables
 Create and configure your `.env` file inside the `backend` directory using the template provided above.
