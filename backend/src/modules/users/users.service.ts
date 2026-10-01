@@ -282,3 +282,29 @@ export async function unfollowUser(fastify: FastifyInstance, followerId: string,
 
   return { following: false };
 }
+
+export async function removeFollower(
+  fastify: FastifyInstance,
+  currentUserId: string,
+  followerUsername: string
+) {
+  const [follower] = await fastify.db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.username, followerUsername));
+ 
+  if (!follower) {
+    throw new Error('User not found');
+  }
+ 
+  if (follower.id === currentUserId) {
+    throw new Error('You cannot remove yourself');
+  }
+ 
+  // Idempotent: if they were not following you, this simply deletes nothing
+  await fastify.db
+    .delete(follows)
+    .where(and(eq(follows.followerId, follower.id), eq(follows.followingId, currentUserId)));
+ 
+  return { removed: true };
+}

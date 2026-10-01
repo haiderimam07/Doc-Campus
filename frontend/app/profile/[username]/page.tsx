@@ -161,6 +161,7 @@ export default function PublicProfilePage() {
   }
 
   const current = profile.data;
+  const closePanel = useCallback(() => setPanel(null), []);
 
   return (
     <AppShell user={summary.data || undefined}>
@@ -315,7 +316,13 @@ export default function PublicProfilePage() {
       </div>
 
       {panel && current && (
-        <ConnectionsPanel username={current.username} type={panel} onClose={() => setPanel(null)} />
+        <ConnectionsPanel
+          username={current.username}
+          type={panel}
+          followersCount={current.followersCount}
+          followingCount={current.followingCount}
+          onClose={closePanel}
+        />
       )}
     </AppShell>
   );

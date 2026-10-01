@@ -9,6 +9,7 @@ import {
   updateProfile,
   followUser,
   unfollowUser,
+  removeFollower
 } from './users.service.js';
 
 export default async function usersRoutes(fastify: FastifyInstance) {
@@ -134,4 +135,19 @@ export default async function usersRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: (err as Error).message });
     }
   });
+
+  fastify.delete(
+  '/me/followers/:username',
+  { preHandler: [fastify.authenticate] },
+  async (request, reply) => {
+    const { username } = request.params as { username: string };
+ 
+    try {
+      const result = await removeFollower(fastify, request.user.sub, username);
+      return result;
+    } catch (err) {
+      return reply.status(400).send({ error: (err as Error).message });
+    }
+  }
+);
 }
