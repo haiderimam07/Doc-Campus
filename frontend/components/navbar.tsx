@@ -31,16 +31,14 @@ function ThemeToggle() {
       className="flex items-center bg-[#1a1d26] border border-[#2d3139] rounded-full p-1 w-14 h-8 transition-colors relative cursor-pointer"
     >
       <span
-        className={`flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 ${
-          light ? 'bg-blue-600 text-white translate-x-6' : 'text-gray-400'
-        }`}
+        className={`flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 ${light ? 'bg-blue-600 text-white translate-x-6' : 'text-gray-400'
+          }`}
       >
         <Sun size={13} />
       </span>
       <span
-        className={`flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 absolute left-1 ${
-          !light ? 'bg-blue-600 text-white translate-x-0' : 'text-gray-400'
-        }`}
+        className={`flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 absolute left-1 ${!light ? 'bg-blue-600 text-white translate-x-0' : 'text-gray-400'
+          }`}
       >
         <Moon size={13} />
       </span>
@@ -87,6 +85,20 @@ export function Navbar({ user }: { user?: ShellUser }) {
     else openMenu();
   }
 
+  // Logo click: if already on the feed, smoothly scroll to top, refresh server
+  // components (router.refresh) and tell the client-side SWR feed to refetch.
+  // Otherwise <Link> navigates to /feed normally.
+  function handleLogoClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    closeMenu();
+
+    if (pathname === '/feed') {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      router.refresh();
+      window.dispatchEvent(new Event('doc-campus:refresh-feed'));
+    }
+  }
+
   return (
     <header className="h-[72px] px-[34px] flex items-center gap-[34px] border-b border-[var(--line)] bg-[#0c0e13e6] backdrop-blur-[18px] sticky top-0 z-10 text-[var(--text)]">
       {/* Left Section: Account Menu & Brand */}
@@ -103,9 +115,8 @@ export function Navbar({ user }: { user?: ShellUser }) {
         {/* Dropdown Menu */}
         {menuVisible && (
           <div
-            className={`absolute top-[48px] left-0 w-[260px] bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-2xl py-2 z-50 transition-all duration-180 ${
-              menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-            }`}
+            className={`absolute top-[48px] left-0 w-[260px] bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-2xl py-2 z-50 transition-all duration-180 ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+              }`}
           >
             <div className="flex items-center gap-3 px-4 py-3">
               <Avatar username={user?.username || 'D'} src={user?.avatarUrl} />
@@ -152,6 +163,7 @@ export function Navbar({ user }: { user?: ShellUser }) {
 
         <Link
           href="/feed"
+          onClick={handleLogoClick}
           className="inline-flex items-center gap-[10px] font-bold text-[20px] font-serif tracking-[-0.6px] whitespace-nowrap text-[var(--text)]"
         >
           <span className="w-[28px] h-[28px] grid place-items-center border border-[var(--blue)] rounded-[8px_8px_8px_2px] text-[var(--blue)] text-[16px]">
@@ -190,9 +202,8 @@ export function Navbar({ user }: { user?: ShellUser }) {
         </button>
 
         <Link
-          className={`p-0 border-0 bg-transparent rounded-full transition-all ${
-            pathname === '/profile' ? 'ring-2 ring-[var(--blue)]' : ''
-          }`}
+          className={`p-0 border-0 bg-transparent rounded-full transition-all ${pathname === '/profile' ? 'ring-2 ring-[var(--blue)]' : ''
+            }`}
           href="/profile"
         >
           <Avatar username={user?.username || 'D'} src={user?.avatarUrl} />
@@ -201,9 +212,8 @@ export function Navbar({ user }: { user?: ShellUser }) {
 
       {/* Mobile Navigation Drawer */}
       <div
-        className={`fixed inset-y-0 left-0 w-72 bg-[var(--panel)] border-r border-[var(--line)] p-6 shadow-2xl z-50 transform transition-transform duration-300 md:hidden ${
-          menuOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 w-72 bg-[var(--panel)] border-r border-[var(--line)] p-6 shadow-2xl z-50 transform transition-transform duration-300 md:hidden ${menuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="flex items-center justify-between mb-6">
           <span className="font-bold text-lg text-[var(--text)]">Menu</span>
@@ -223,7 +233,7 @@ export function Navbar({ user }: { user?: ShellUser }) {
             <Home size={16} /> Feed
           </Link>
           <Link
-            href="/profile"
+            href={user?.username ? `/profile/${user.username}` : "/profile"}
             onClick={closeMenu}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--text)] transition-colors"
           >

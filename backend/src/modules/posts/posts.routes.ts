@@ -13,14 +13,21 @@ import {
   deletePost,
   savePost,
   unsavePost,
+  getSavedPosts,
   getSavedPostIds,
 } from './posts.service.js';
 
 export default async function postsRoutes(fastify: FastifyInstance) {
 
   fastify.get('/saved', { preHandler: [fastify.authenticate] }, async (request) => {
-    return getSavedPostIds(fastify, request.user.sub);
-  });
+  const { cursor, limit } = feedQuerySchema.parse(request.query);
+  
+  return getSavedPosts(fastify, request.user.sub, { cursor, limit });
+});
+
+fastify.get('/saved/ids', { preHandler: [fastify.authenticate] }, async (request) => {
+  return getSavedPostIds(fastify, request.user.sub);
+});
 
   // GET /posts/feed — Unified Hybrid Feed (optional auth, guest fallback)
   // fastify.get('/feed', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {

@@ -144,7 +144,12 @@ export function unsavePost(postId: string) {
 }
 
 export function getSavedPostIds() {
-  return api<{ items: string[] }>('/api/posts/saved');
+  return api<{ items: string[] }>('/api/posts/saved/ids');
+}
+
+export async function getSavedPosts(cursor?: string, limit = 20) {
+  const query = cursor ? `?cursor=${cursor}&limit=${limit}` : `?limit=${limit}`;
+  return api<{ items: Post[]; nextCursor: string | null; hasNextPage: boolean }>(`/api/posts/saved${query}`);
 }
 
 export function getPost(postId: string) {

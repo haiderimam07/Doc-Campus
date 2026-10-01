@@ -168,6 +168,61 @@ export async function unsavePost(fastify: FastifyInstance, postId: string, userI
   return { saved: false };
 }
 
+export async function getSavedPosts(
+  fastify: FastifyInstance,
+  userId: string,
+  { cursor, limit }: { cursor?: string; limit: number }
+) {
+  const cursorCond = cursor
+    ? (() => {
+        const { createdAt, id } = decodeCursor(cursor);
+        // Matches the composite index order: (createdAt DESC, postId DESC)
+        return or(
+          lt(saves.createdAt, createdAt),
+          and(eq(saves.createdAt, createdAt), lt(saves.postId, id))
+        );
+      })()
+    : undefined;
+
+  const savedRecords = await fastify.db
+    .select({
+      id: posts.id,
+      description: posts.description,
+      fileUrl: posts.fileUrl,
+      fileType: posts.fileType,
+      ocrStatus: posts.ocrStatus,
+      ocrText: posts.ocrText,
+      likeCount: posts.likeCount,
+      commentCount: posts.commentCount,
+      saveCount: posts.saveCount,
+      shareCount: posts.shareCount,
+      createdAt: saves.createdAt, // Or posts.createdAt depending on which date you want to display
+      // We explicitly map postId to id for cursor decoding/encoding consistency
+      postId: posts.id,
+      author: {
+        id: users.id,
+        username: users.username,
+        avatarUrl: users.avatarUrl,
+      },
+    })
+    .from(saves)
+    .innerJoin(posts, eq(saves.postId, posts.id))
+    .innerJoin(users, eq(users.id, posts.userId))
+    .where(cursorCond ? and(eq(saves.userId, userId), cursorCond) : eq(saves.userId, userId))
+    .orderBy(desc(saves.createdAt), desc(saves.postId))
+    .limit(limit + 1);
+
+  const hasNextPage = savedRecords.length > limit;
+  const items = hasNextPage ? savedRecords.slice(0, limit) : savedRecords;
+  const lastItem = items[items.length - 1];
+
+  return {
+    items,
+    nextCursor: hasNextPage && lastItem ? encodeCursor(lastItem.createdAt, lastItem.postId) : null,
+    hasNextPage,
+  };
+}
+
 export async function getSavedPostIds(fastify: FastifyInstance, userId: string) {
   const records = await fastify.db
     .select({ postId: saves.postId })

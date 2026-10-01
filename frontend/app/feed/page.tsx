@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
@@ -9,6 +9,7 @@ import { FeedProfileSummary } from '@/components/feed-profile-summary';
 import { FeedRightRail } from '@/components/feed-right-rail'; // server component (no 'use client')
 import { PostCard } from '@/components/post-card';
 import { PostComposer } from '@/components/post-composer';
+import { LazyMotion, domAnimation, m, MotionConfig } from 'framer-motion';
 import {
   api,
   getSavedPostIds,
@@ -127,6 +128,23 @@ export default function FeedPage() {
     void summary.mutate();
   }, [feed.setSize, feed.mutate, saved.mutate, summary.mutate]);
 
+const [isRefreshing, setIsRefreshing] = useState(false);
+
+const handleLogoRefresh = useCallback(async () => {
+  setIsRefreshing(true);
+  try {
+    await refreshFeed();
+  } finally {
+    setIsRefreshing(false);
+  }
+}, [refreshFeed]);
+
+useEffect(() => {
+  const onRefresh = () => void handleLogoRefresh();
+  window.addEventListener('doc-campus:refresh-feed', onRefresh);
+  return () => window.removeEventListener('doc-campus:refresh-feed', onRefresh);
+}, [handleLogoRefresh]);
+
   return (
     <AppShell user={summary.data || undefined}>
       {/* 1 column on phones, 2 on tablets (no right rail), 3 on desktop */}
@@ -140,7 +158,11 @@ export default function FeedPage() {
         <div className="min-w-0 pb-10">
           <PostComposer onPosted={refreshFeed} />
 
-          <section aria-label="Campus feed" aria-busy={isInitialLoading || isLoadingMore}>
+          <section
+            aria-label="Campus feed"
+            aria-busy={isInitialLoading || isLoadingMore || isRefreshing}
+            className={`transition-opacity duration-200 ${isRefreshing ? 'opacity-60' : 'opacity-100'}`}
+          >
             <FeedList
               posts={posts}
               savedIds={savedIds}
@@ -218,18 +240,23 @@ function FeedList({
   }
 
   return (
-    <ul className="m-0 list-none p-0">
-      {posts.map((post) => (
-        <li key={post.id}>
-          <PostCard
-            post={post}
-            isSaved={savedIds.has(post.id)}
-            onToggleSave={onToggleSave}
-          />
-        </li>
-      ))}
-    </ul>
-  );
+  <MotionConfig reducedMotion="user">
+    <LazyMotion features={domAnimation}>
+      <ul className="m-0 list-none p-0">
+        {posts.map((post) => (
+          <m.li
+            key={post.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            <PostCard post={post} isSaved={savedIds.has(post.id)} onToggleSave={onToggleSave} />
+          </m.li>
+        ))}
+      </ul>
+    </LazyMotion>
+  </MotionConfig>
+);
 }
 
 type LoadMoreProps = {
