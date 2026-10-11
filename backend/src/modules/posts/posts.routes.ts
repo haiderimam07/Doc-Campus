@@ -20,14 +20,14 @@ import {
 export default async function postsRoutes(fastify: FastifyInstance) {
 
   fastify.get('/saved', { preHandler: [fastify.authenticate] }, async (request) => {
-  const { cursor, limit } = feedQuerySchema.parse(request.query);
-  
-  return getSavedPosts(fastify, request.user.sub, { cursor, limit });
-});
+    const { cursor, limit } = feedQuerySchema.parse(request.query);
 
-fastify.get('/saved/ids', { preHandler: [fastify.authenticate] }, async (request) => {
-  return getSavedPostIds(fastify, request.user.sub);
-});
+    return getSavedPosts(fastify, request.user.sub, { cursor, limit });
+  });
+
+  fastify.get('/saved/ids', { preHandler: [fastify.authenticate] }, async (request) => {
+    return getSavedPostIds(fastify, request.user.sub);
+  });
 
   // GET /posts/feed — Unified Hybrid Feed (optional auth, guest fallback)
   // fastify.get('/feed', { preHandler: [fastify.tryAuthenticate] }, async (request, reply) => {
@@ -97,7 +97,7 @@ fastify.get('/saved/ids', { preHandler: [fastify.authenticate] }, async (request
     } catch (err) {
       // clean up the orphaned R2 upload if anything failed after it succeeded
       if (uploaded) {
-        await deleteFromStorage(uploaded.fileUrl).catch(() => {});
+        await deleteFromStorage(uploaded.fileUrl).catch(() => { });
       }
       throw err;
     }

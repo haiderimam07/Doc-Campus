@@ -51,6 +51,7 @@ export default function PublicProfilePage() {
   const { username } = useParams<{ username: string }>();
   const [panel, setPanel] = useState<'followers' | 'following' | null>(null);
   const [isFollowPending, setIsFollowPending] = useState(false);
+  const closePanel = useCallback(() => setPanel(null), []);
 
   // --- Data: all three requests start in parallel and none blocks the others ---
   const summary = useSWR('/api/users/me/summary', getSummary, SWR_OPTIONS);
@@ -161,7 +162,7 @@ export default function PublicProfilePage() {
   }
 
   const current = profile.data;
-  const closePanel = useCallback(() => setPanel(null), []);
+  
 
   return (
     <AppShell user={summary.data || undefined}>
